@@ -1,0 +1,22 @@
+extends ../layouts/admin-layout
+block content
+    style
+        include ../styles/login.css
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css")
+    script(src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js")
+    .ui.text.container.form-container
+        .div-form
+            .div-image
+                img(src="/imgs/admin/profile_white.png", alt="Avatar", class="avatar")
+            form.ui.form
+                .field
+                    .ui.left.icon.input
+                        input(type='text' name='user' placeholder='Usuario' class="input-trans")
+                        <i class="users icon"></i>
+                .field
+                    .ui.left.icon.input
+                        input(type='password' name='contraseña' placeholder='Contraseña' class="input-trans")
+                        <i class="lock icon"></i>
+                button.ui.button.button Iniciar sesión
+
+

@@ -1,0 +1,68 @@
+.div-inputs{
+    color: blue;
+}
+
+.form-container{
+    position: absolute;
+    margin: auto;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 300px !important;
+    height: 300px;
+    background-color: #d6dfdede;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    padding: 20px;
+}
+
+.input-trans{
+    background-color: transparent !important;
+    border-top: 0px !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    border-bottom: 1px solid rgba(76, 90, 101, 0.397) !important;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 0px !important;
+}
+
+.input-trans::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: #4c5a65de !important;
+    opacity: 1; /* Firefox */
+}
+
+.input{
+    margin: 5px;
+}
+
+.button{
+    background-color: #4c5a65de !important;
+    color: white !important;
+    border-radius: 0px !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: normal !important;
+}
+
+body{
+    background-image: url("/imgs/admin/sample-background.jpg") !important;
+    background-size: cover !important;
+    background-position: center 0 !important;
+}
+
+.avatar{
+    width: 100px;
+    height: 100px;
+}
+
+.div-image{
+    border-radius: 50%;
+    opacity: 0.75;
+    position: relative;
+    margin: auto;
+    background-color: #a4acafde;
+    height: 100px;
+    width: 100px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
