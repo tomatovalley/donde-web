@@ -7,6 +7,7 @@ var Register = mongoose.model('Register', new Schema({
   City: {type: String, required: true},
   User: {type: String, required: true},
   Password: {type: String, required: true},
+  UserType: {type: String, required: true},
   Scores: {type: Object, default: []},
   DailyScore: {type: Number, default: 0.0},
   WeeklyScore: {type: Number, default: 0.0},

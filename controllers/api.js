@@ -1,10 +1,9 @@
-var jwt = require('jsonwebtoken');
 var express = require('express');
 var apiRoutes = express.Router();
-
-var config = require('../config');
 var User = require('../models/user');
 var bcrypt = require('bcrypt-nodejs');
+var jwt = require('jsonwebtoken');
+var config = require('../config');
 
 apiRoutes.get('/', function(req, res) {
     res.json({
@@ -19,7 +18,8 @@ apiRoutes.post('/doRegister', function(req, res){
         Email: req.body.Email,
         City: req.body.City,
         User: req.body.User,
-        Password: bcrypt.hashSync(req.body.Password,bcrypt.genSaltSync(10))
+        Password: bcrypt.hashSync(req.body.Password,bcrypt.genSaltSync(10)),
+        UserType: req.body.UserType
     });
     newUser.save(function(err){
         if(err){
@@ -33,25 +33,39 @@ apiRoutes.post('/doRegister', function(req, res){
 
 apiRoutes.post('/doLogin', function(req, res){
     User.Login.findOne({
-        User: req.body.User
-    },['_id', 'User', 'Password'], function(err, usuario){
-        if(err){
-            //Only user is wrong but you know, security.
-            res.json({success: false, msg: "Usuario o contraseña invalido."})
+        User: req.body.User 
+    },['_id', 'User', 'Password','UserType'], function(err, usuario){
+        if(err){   
+            res.json({success: false, msg: "Algo malo sucedió en la consulta."})
         }
         else if(usuario){
-            console.log(req.body.Password);
             usuario = usuario.toObject();
-            console.log("USER: "+usuario.User);
-            console.log("PASSWORD:"+usuario.Password);
-            bcrypt.compare(req.body.Password, usuario.Password, function(error, done){
+            bcrypt.compare(req.body.Password, usuario.Password, function(error, response){
                 if(error){
-                    res.json({success: false, msg: "Usuario o contraseña invalido."});
+                   res.json({success: false, msg: "Algo mal ha sucedido"});
+                }
+                else if(response){
+                    var userdata = {
+                        id: usuario._id,
+                        user: usuario.User,
+                        userType: usuario.UserType 
+                        //should i return the userType?!?!?
+                        //should i return it in the token data?!?!
+                    }   
+                    var token = jwt.sign(userdata, config.secret, {
+                        expiresIn: 86400 // expires in 24 hours
+                    });
+                    userdata.token = token;
+                    userdata.success = true;
+                    res.redirect('/admin');
                 }
                 else{
-                    res.json({success: true, done})
+                    res.json({success: false, msg: "Usuario o contraseña invalido"});
                 }
             })
+        }
+        else{
+            res.json({success: false, msg: "Usuario o contraseña invalido"});
         }
     })
 })
