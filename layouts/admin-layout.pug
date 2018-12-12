@@ -1,6 +1,42 @@
 html
     head
-        title Login - Donde
+        title= title
         meta(name="viewport" content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", type="text/css", href="/semantic/dist/semantic.min.css")
+        script(src="/js/jquery.min.js")
+        script(src="/semantic/dist/semantic.min.js")
     body
-    block content
+    .ui.top.attached.demo.menu.inverted 
+        a.item
+            i.sidebar.icon
+            |     Menu
+            
+    .ui.bottom.attached.segment.pushable
+        .ui.inverted.labeled.icon.left.inline.vertical.sidebar.menu
+            a.item
+                i.home.icon
+                |     Inicio
+            a.item
+                i.block.users.icon
+                |     Usuarios
+            a.item
+                i.smile.icon.camera.retro
+                |     Imagenes
+            a.item
+                i.icon.logout
+                |     Salir
+        .pusher
+            .ui.basic.segment
+                h3.ui.header 
+                    block content
+                p
+                p
+                p
+                p
+    script.
+        $('.ui.sidebar')
+            .sidebar({
+                context: $('.bottom.segment')
+            })
+            .sidebar('attach events', '.menu .item')
+            ;

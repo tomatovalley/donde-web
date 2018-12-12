@@ -1,23 +1,42 @@
-extends ../layouts/admin-layout
-block content
-    style
-        include ../styles/login.css
-    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css")
-    script(src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js")
-    script(src="/js/login.js")
-    .ui.text.container.form-container
-        .div-form
-            .div-image
-                img(src="/imgs/admin/profile_white.png", alt="Avatar", class="avatar")
-            form.ui.form
-                .field
-                    .ui.left.icon.input
-                        input(type='text' name='user' placeholder='Usuario' id="user" class="input-trans")
-                        <i class="users icon"></i>
-                .field
-                    .ui.left.icon.input
-                        input(type='password' name='contraseña' placeholder='Contraseña' id="pass" class="input-trans")
-                        <i class="lock icon"></i>
-            button.ui.button.button(onclick="doLogin()") Iniciar sesión
+html
+    head
+        title Login - Donde
+        meta(name="viewport" content="width=device-width, initial-scale=1")
+        style
+            include ../styles/login.css
+    body
+        link(rel="stylesheet", type="text/css", href="/semantic/dist/semantic.min.css")
+        script(src="/js/jquery.min.js")
+        script(src="/semantic/dist/semantic.min.js")
+        script(src="/js/login.js")
+        .ui.text.container.form-container
+            .div-form
+                .div-image
+                    img(src="/imgs/admin/profile_white.png", alt="Avatar", class="avatar")
+                form.ui.form
+                    .field
+                        .ui.left.icon.input
+                            input(type='text' name='user' placeholder='Usuario' id="user" class="input-trans")
+                            <i class="users icon"></i>
+                    .field
+                        .ui.left.icon.input
+                            input(type='password' name='contraseña' placeholder='Contraseña' id="pass" class="input-trans")
+                            <i class="lock icon"></i>
+                button.ui.button(onclick="doLogin()") Iniciar sesión
+        .ui.page.dimmer
+            .content
+                .ui.massive.text.loader
+                    | Iniciando sesión
+        .ui.tiny.modal
+            i.close.icon
+            .header
+                | Error en inicio de sesión
+            .image.content
+                .description
+                    p#modal-text
+            .actions
+                .ui.positive.right.labeled.icon.button
+                    | Aceptar
+                    i.checkmark.icon
 
 

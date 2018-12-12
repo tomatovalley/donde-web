@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var apiRoutes = require('./controllers/api');
 var adminRoutes = require('./controllers/admin');
 var config = require('./config');
+var cookieParser = require('cookie-parser');
 
 mongoose.connect(config.database,function(err){
     if(err){
@@ -22,11 +23,12 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
     extended: false
 }));
+app.use(cookieParser());
 app.use(bodyParser.json());
 // use morgan to log requests to the console
 app.use(morgan('dev'));
 app.use('/api', apiRoutes);
-app.use('/admin', adminRoutes);
+app.use('/inicio', adminRoutes);
 app.get('/', function(req, res) {
     res.render('login');
 })
