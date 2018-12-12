@@ -42,22 +42,25 @@ apiRoutes.post('/doLogin', function(req, res){
             usuario = usuario.toObject();
             bcrypt.compare(req.body.Password, usuario.Password, function(error, response){
                 if(error){
-                   res.json({success: false, msg: "Algo mal ha sucedido"});
+                   res.json({success: false, msg: "Algo ha salido mal."});
                 }
                 else if(response){
                     var userdata = {
                         id: usuario._id,
                         user: usuario.User,
                         userType: usuario.UserType 
-                        //should i return the userType?!?!?
-                        //should i return it in the token data?!?!
                     }   
                     var token = jwt.sign(userdata, config.secret, {
                         expiresIn: 86400 // expires in 24 hours
                     });
                     userdata.token = token;
                     userdata.success = true;
-                    res.redirect('/admin');
+                    res.cookie('access_token',token,{
+                        maxAge: 3600,
+                        httpOnly:true
+                    })
+                    res.json(userdata);
+                    //res.json(userdata);
                 }
                 else{
                     res.json({success: false, msg: "Usuario o contraseña invalido"});
