@@ -1,0 +1,57 @@
+body{
+    overflow: hidden;
+}
+.image{
+    height: 141px !important;
+}
+.image img{
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+}
+
+@media only screen and (max-width: 767px){
+    .ui.five.doubling.cards{
+        margin-top: 10px; 
+    }
+}
+
+div.ui.selection.dropdown, div.ui.icon.input{
+    font-size: 13px;
+}
+
+.tools div{
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.tools #modalidad{
+    float: left;
+}  
+
+.tools #modalidad .active{
+    background-color: black;
+    color: white;
+}
+
+.tools{
+    text-align: right;
+}
+
+#cargando.active{
+    top: 170%;
+}
+
+.buttons{
+    text-align: center;
+    margin: 15.75px 0px 50px 15px;
+}
+
+#addCity    {
+    margin-right: 20px;
+}
+
+#cards{
+    margin-bottom: 25px;
+}

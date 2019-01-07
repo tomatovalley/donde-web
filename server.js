@@ -4,7 +4,8 @@ var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
 var apiRoutes = require('./controllers/api');
-var adminRoutes = require('./controllers/admin');
+var homeRoutes = require('./controllers/home');
+var imagesRoutes = require('./controllers/images');
 var config = require('./config');
 var cookieParser = require('cookie-parser');
 
@@ -28,7 +29,19 @@ app.use(bodyParser.json());
 // use morgan to log requests to the console
 app.use(morgan('dev'));
 app.use('/api', apiRoutes);
-app.use('/inicio', adminRoutes);
+app.use('/home', homeRoutes);
+app.use('/images', imagesRoutes);
+
+//check if the user has cookie to redirect to admin panel
+app.use(function (req, res, next) {
+    if('access_token' in req.cookies){
+        res.redirect('/home');
+    }
+    else{
+        next();
+    }
+})
+
 app.get('/', function(req, res) {
     res.render('login');
 })

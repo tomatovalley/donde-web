@@ -17,15 +17,20 @@ function doLogin(){
             $('.dimmer').dimmer('hide');
             if(response.success){
                 if(response.userType == 1){
-                    //localStorage.setItem("x-auth-token", response.token);
-                    window.location.href = '/inicio';
+                    window.location.href = '/home';
                 }
             }
             else{
                 document.getElementById('modal-text').innerHTML = response.msg;
                 $('.tiny.modal').modal('show');
             }
-         }
+        }
+        
+        else if(this.readyState == XMLHttpRequest.DONE){
+            $('.dimmer').dimmer('hide');
+            document.getElementById('modal-text').innerHTML = "Error en la conexión al servidor."
+            $('.tiny.modal').modal('show');
+        }
     }
     Http.send(JSON.stringify(data));
 
