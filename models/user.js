@@ -21,5 +21,5 @@ var Login = mongoose.model('Login', new Schema({
 
 module.exports = {
   Login: Login,
-  Register, Register
+  Register: Register
 };

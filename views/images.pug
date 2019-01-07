@@ -1,0 +1,109 @@
+extends ../layouts/admin-layout
+block content  
+    link(rel="stylesheet", type="text/css", href="/css/images.css")
+    .tools.computer.only
+        .ui.buttons#modalidad
+            button.ui.button#general.active(onclick="refreshCities(1)") General
+            .or(data-text="O")
+            button.ui.button#specific(onclick="refreshCities(2)") Específica
+        
+        button.ui.labeled.icon.button#addCity
+            i.add.icon
+            |   Agregar ciudad
+
+
+        .ui.search.small   
+            .ui.icon.input
+                input.prompt(type='text', placeholder='Search...')
+                i.search.icon
+            .results
+
+                
+    .ui.divider
+
+    .ui.link.cards.five.column.grid.doubling.stackable#cards
+        each city in cities
+            .ui.card
+                a(href='/images/'+city.id)
+                    .image
+                        img(src=city.toObject().ImagesM1.length > 0? city.toObject().ImagesM1[0].URL: '/imgs/admin/no-image.png')
+                    .content
+                        a.header= city.toObject().City
+                        .meta
+                            span.date= city.toObject().State+', '+city.toObject().Country
+                    .extra.content
+                        a
+                            i.picture.icon
+                            if city.toObject().ImagesM1.length != 1
+                                = city.toObject().ImagesM1.length+" Imágenes"
+                            else 
+                                = city.toObject().ImagesM1.length+" Imágen"
+
+    //Loader
+    .ui.text.loader#cargando Cargando...
+
+    //modal error
+    .ui.tiny.modal#error-modal
+        i.close.icon
+        .header
+            | Error al conectar con el servidor
+        .content
+            p#modal-text
+        .actions
+            .ui.positive.right.labeled.icon.button
+                | Aceptar
+                i.checkmark.icon
+            
+    //Modal form 
+    .ui.tiny.modal.first#formCiudad
+        .header
+            | Nueva ciudad
+        .content
+            form.ui.form#addCityForm
+                .field
+                    label Ciudad
+                    input#cityInput(type='text', name='city', placeholder='Ciudad',onkeypress="this.parentElement.classList.remove('error')")
+                .field
+                    label Estado
+                    input#stateInput(type='text', name='state', placeholder='Estado',onkeypress="this.parentElement.classList.remove('error')")
+                .field
+                    label País
+                    input#countryInput(type='text', name='country', placeholder='Pais',onkeypress="this.parentElement.classList.remove('error')")
+                .field
+                    label Modalidad
+                    select.ui.dropdown#selectMode(name='mode')
+                        option(value='1') General
+                        option(value='2') Específica
+                        option(value='3') Ambas
+
+        .actions
+            .ui.button.cancel#cancelBtn Cancelar
+            .ui.button.black#addBtn(onclick="addCity()") Agregar
+
+    //Modal de confirmación para actualizar modalidad
+    .ui.tiny.modal#confirm-update
+        .header
+            | Ciudad existente
+        .content
+            p#modal-text-confirm
+        .actions
+            .ui.labeled.icon.button.negative
+                i.cancel.icon
+                |   Cancelar
+            .ui.labeled.icon.button.positive#confirmUpdate(onclick="updateModeCity()")
+                i.check.icon
+                |   Confirmar
+    
+    //Success modal
+    .ui.mini.modal#success-modal
+        i.close.icon
+        .header
+            | Ciudad agregada
+        .content
+            p#modal-success-text 
+        .actions
+            .ui.positive.right.labeled.icon.button
+                | Aceptar
+                i.checkmark.icon
+
+    script(src="/js/images.js")

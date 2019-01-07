@@ -7,19 +7,19 @@ html
         script(src="/semantic/dist/semantic.min.js")
     body
     .ui.top.attached.demo.menu.inverted 
-        a.item
+        a.item#sidebar-button
             i.sidebar.icon
             |     Menu
             
     .ui.bottom.attached.segment.pushable
-        .ui.inverted.labeled.icon.left.inline.vertical.sidebar.menu
-            a.item
+        .ui.inverted.labeled.icon.left.inline.vertical.sidebar.menu#sidebar
+            a.item(href="/home")
                 i.home.icon
                 |     Inicio
             a.item
                 i.block.users.icon
                 |     Usuarios
-            a.item
+            a.item(href="/images")
                 i.smile.icon.camera.retro
                 |     Imagenes
             a.item
@@ -27,16 +27,15 @@ html
                 |     Salir
         .pusher
             .ui.basic.segment
-                h3.ui.header 
+                h3.ui.header
                     block content
                 p
                 p
                 p
                 p
     script.
-        $('.ui.sidebar')
+        $('#sidebar')
             .sidebar({
                 context: $('.bottom.segment')
             })
-            .sidebar('attach events', '.menu .item')
-            ;
+            .sidebar('attach events', '.menu #sidebar-button');

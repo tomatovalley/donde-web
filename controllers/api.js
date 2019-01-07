@@ -56,7 +56,6 @@ apiRoutes.post('/doLogin', function(req, res){
                     userdata.token = token;
                     userdata.success = true;
                     res.cookie('access_token',token,{
-                        maxAge: 3600,
                         httpOnly:true
                     })
                     res.json(userdata);
