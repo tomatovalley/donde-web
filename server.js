@@ -6,6 +6,7 @@ var mongoose = require('mongoose');
 var apiRoutes = require('./controllers/api');
 var homeRoutes = require('./controllers/home');
 var imagesRoutes = require('./controllers/images');
+var usersRoutes = require('./controllers/users');
 var config = require('./config');
 var cookieParser = require('cookie-parser');
 
@@ -31,6 +32,7 @@ app.use(morgan('dev'));
 app.use('/api', apiRoutes);
 app.use('/home', homeRoutes);
 app.use('/images', imagesRoutes);
+app.use('/users', usersRoutes);
 
 //check if the user has cookie to redirect to admin panel
 app.use(function (req, res, next) {
