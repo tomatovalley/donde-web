@@ -1,4 +1,4 @@
-extends ../layouts/admin-layout
+extends ../../layouts/admin-layout
 block content  
     link(rel="stylesheet", type="text/css", href="/css/images.css")
     .tools.computer.only
@@ -93,17 +93,4 @@ block content
             .ui.labeled.icon.button.positive#confirmUpdate(onclick="updateModeCity()")
                 i.check.icon
                 |   Confirmar
-    
-    //Success modal
-    .ui.mini.modal#success-modal
-        i.close.icon
-        .header
-            | Ciudad agregada
-        .content
-            p#modal-success-text 
-        .actions
-            .ui.positive.right.labeled.icon.button
-                | Aceptar
-                i.checkmark.icon
-
     script(src="/js/images.js")
