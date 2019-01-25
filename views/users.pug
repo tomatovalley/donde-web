@@ -1,3 +1,46 @@
 extends ../layouts/admin-layout
 block content  
     link(rel="stylesheet", type="text/css", href="/css/users.css")
+    
+    .tools.computer.only
+        .ui.search.small
+        .ui.icon.input
+            input(type='text', placeholder='Search users...')
+            i.users.icon
+
+    .ui.divider
+
+    table.ui.five.column.table
+        thead
+            tr
+                th
+                    font(style='vertical-align: inherit;') IMAGEN
+                th
+                    font(style='vertical-align: inherit;') NOMBRE
+                th
+                    font(style='vertical-align: inherit;') CIUDAD
+                th
+                    font(style='vertical-align: inherit;') PUNTUACIÓN
+                th
+                    font(style='vertical-align: inherit;') STATUS
+        tbody
+            tr
+                td
+                    font(style='vertical-align: inherit;')
+                        img(src="", alt="")
+                td
+                    font(style='vertical-align: inherit;') Scott
+                td
+                    font(style='vertical-align: inherit;') Mazatlán
+                td
+                    font(style='vertical-align: inherit;') 350 
+                    i.diamond.icon
+                td
+                    font(style='vertical-align: inherit;')
+                        .ui.buttons
+                            button.ui.positive.button
+                                font(style='vertical-align: inherit;') Activo
+                            .or
+                            button.ui.negative.button
+                                font(style='vertical-align: inherit;') Bloqueado
+    
