@@ -1,0 +1,173 @@
+/* imagesByCity*/
+.tools{
+    text-align: right;
+}
+
+.tools div{
+    display: inline-block;
+    margin-right: 10px;
+}
+
+div.ui.selection.dropdown, div.ui.icon.input{
+    font-size: 13px;
+}
+
+#delete {
+    position: relative;
+    bottom: 11px;
+}
+.cityName{
+    float: left;
+    margin-left: 15px;
+    position: relative;
+    top: -10px;
+    text-align: left;
+}
+.cityName h1{
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+.note{
+    font-size: 12px; 
+    margin-top:5px;
+}
+
+.ui.basic.modal#delete-modal .content p{
+    text-align: center;
+}
+
+button.ui.basic.button.left{
+    float: left;
+}
+
+#img-div{
+    text-align: center;
+    cursor: pointer;
+}
+
+.toolsImages{
+    text-align: right;
+}
+
+.ui.checkbox{
+    position: absolute;
+    right: 0px;
+    top: 7px;
+    display: none;
+}
+
+#imgFile{
+    object-fit: contain;
+}
+
+.image{
+    text-align: center;
+    background-color: black;
+}
+.card .image{
+    height: 141px !important;
+}
+.card .image img{
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    object-position: center;
+}
+
+.extra.content{
+    color: rgba(0,0,0,.4);
+    transition: color .1s ease;
+    padding: .75em 1em;
+}
+
+.position{
+    font-size: small;
+    border-bottom-left-radius: 100%;
+    text-align: center;
+    width: auto;
+    padding: 3px 6px;
+    position: absolute;
+    background-color: black;
+    opacity: 0.76;
+    /* float: right; */
+    right: 8;
+    color: white;
+    border-bottom-right-radius: 100%;
+}
+
+#tags{
+    margin-bottom: 5px;
+}
+
+#imgDetails{
+    min-height: 70px;
+    width: 100%;
+    background: #000000ad;
+    position: absolute;
+    height: 15%;
+    bottom: 0px;
+    color: white;
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+#imgDetails #detail-name{
+    float: left;
+    margin-left: 30px;
+    margin-top: 10px;
+}
+
+#imgDetails #detail-points{
+    float: right;
+    margin-right: 30px;
+    margin-top: 10px;
+}
+
+#imgDetails #detail-tagsText{
+    float: left;
+    margin-left: 30px;
+    margin-top: 10px;
+    position: absolute;
+    bottom: 0%;
+}
+
+#imgDetails #detail-tags{
+    float: left;
+    margin-left: 30px;
+    margin-top: 10px;
+    position: inherit;
+    bottom: 10%;
+    left: 13%;
+}
+
+.ui.dimmer{
+    background-color: rgba(0, 0, 0, 0.49);
+}
+
+.card-switch{
+    /* Start the shake animation and make the animation last for 0.5 seconds */
+  animation: shake 2s; 
+
+  /* When the animation is finished, start again */
+  animation-iteration-count: infinite; 
+  animation-direction: alternate;
+}
+
+  @keyframes shake {
+    0% {transform: rotate(0deg);}
+    20% {
+        
+        /* transform: translateY(-10px); */
+        transform: rotate(3deg);
+    }
+    40%{
+        transform: rotate(-3deg);
+    }
+    /* 40% {transform: rotate(0deg);} */
+    60% {transform: rotate(3deg);}
+    /* 80% {transform: rotate(0deg);} */
+    80% {transform: rotate(-3deg);}
+    
+    100% {transform: rotate(0deg);}
+  }
+

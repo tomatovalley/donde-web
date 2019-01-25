@@ -45,7 +45,7 @@ imagesRoutes.get('/', function(req, res) {
         return res.render('images', {title: "Imágenes - Donde", success: false, msg: errorMsg});
       }
       else{
-        res.render('images', {title: "Imágenes - Donde", cities: rs});
+        res.render('images/images', {title: "Imágenes - Donde", cities: rs});
       }
     })
   })
@@ -59,7 +59,7 @@ imagesRoutes.get('/:city', function(req, res) {
           //return res.render('images', {title: "Imágenes - Donde", success: false, msg: errorMsg});
         }
         else{
-          res.render('images', {title: "Imágenes - Donde", cities: rs});
+          res.render('images/cityImages', {title: "Imágenes - Donde", city: rs});
         }
     })
 })
@@ -102,6 +102,39 @@ imagesRoutes.post('/addCity', function(req, res){
               res.json({success: true, msg: "Se ha agregado la ciudad correctamente."})
               console.log(response);
             }
+        })
+      }
+    }
+  })
+})
+
+/**
+ * Edita una ciudad pero primero verifica que no haya una ciudad con ese mismo nombre ya existiendo.
+ */
+imagesRoutes.put('/editCity', function(req, res){
+  Images.find({$and:[{_id: {$ne: req.body._id},City:req.body.City, State:req.body.State, Country:req.body.Country}]},function(err,rs){
+    //Error code is used to identificate the error in the client side
+    if(err){
+      return res.json({success:false, msg: "No se pudo obtener información de la base de datos", errorCode: 100})
+    }
+    else{
+      if(typeof rs !== undefined && rs.length > 0){
+        res.json({success: false, msg: "Ciudad ya existente",errorCode: 101, city: rs} );
+      }
+      else{
+        let city = {
+          City: req.body.City,
+          State: req.body.State,
+          Country: req.body.Country,
+          Mode: req.body.Mode
+        };
+        Images.update({_id: req.body._id}, {$set: city},function(err, rs){
+          if(err){
+            res.json({success: false, msg: "No se pudo modificar la ciudad.", err:err})
+          }
+          else{
+            res.json({success: true, msg: "Se ha modificado la ciudad correctamente.", response: rs})
+          }
         })
       }
     }

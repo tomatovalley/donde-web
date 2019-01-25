@@ -1,0 +1,194 @@
+extends ../../layouts/admin-layout
+block content  
+    link(rel="stylesheet", type="text/css", href="/css/cityImages.css")
+    
+    .tools.computer.only
+        .cityName
+            h1#cityName=city.City
+            p#cityStateCountry=city.State+", "+city.Country
+        
+        .modalidad
+            select.ui.dropdown#modalidad(onchange='filterImagesByMode()')
+                if city.Mode==1
+                    option(value='1') General
+                else if city.Mode==2
+                    option(value='2') Específica
+                else
+                    option(value='1') General
+                    option(value='2') Específica
+        script.
+            $('#modalidad').dropdown();
+            let city = !{JSON.stringify(city)};
+        div
+            button.ui.labeled.icon.button#editCity
+                i.edit.icon
+                |   Modificar ciudad
+
+            .ui.icon.button#delete(data-content='Eliminar ciudad')
+                i.trash.icon
+    .ui.divider
+    .toolsImages
+        button.ui.active.button.primary#addImageBtn
+            i.upload.icon
+            |   Subir imagen
+        button.ui.basic.button.select#selectMultiBtn    
+            i.tasks.icon
+            |   Seleccionar elementos
+        button.ui.basic.button.select#selectSwitchBtn(onclick="makeCardsSwitchable()")
+            i.exchange.icon
+            |   Intercambiar elementos
+        button.ui.basic.button
+                i.trash.icon
+                |   Eliminar selección
+            
+    br
+    .ui.link.cards.five.column.grid.doubling.stackable#cards
+        if city.Mode == 1 || city.Mode == 3
+            each image, index in city.ImagesM1
+                block cards
+                    if image.Answered == false
+                        .ui.card(onclick=`clickImage('${image.URL}',${index}, this)`)
+                            .ui.checkbox(onclick=`clickImage('${image.URL}',${index})`)
+                                input.check-input(type="checkbox", id="checkId"+index)
+                                label
+                            .card-content
+                                .ui.dimmer.div-dimmer
+                                    .content
+                                        h2.ui.inverted.header Title
+                                        .ui.primary.button Add
+                                        .ui.button View
+                                    
+                                .position=index+1
+                                .image
+                                    img(src=`${image.URL}` onerror='this.src="/imgs/admin/no-image.png"')
+                                .extra.content
+                                    i.picture.icon
+                                    |   #{typeof image.Value!=='undefined'?image.Value:'0'} #{image.Value == 1?' Punto':' Puntos'}
+
+                            .ui.dimmer#div-dimmer
+                                    .content
+                                        h2.ui.inverted.header 
+                                            i.exchange.icon
+                                        |   Seleccionar para cambiar de posición
+            
+        else
+            each image, index in city.ImagesM2
+                block cards
+
+    //Modal form 
+    .ui.tiny.modal.first#formCiudad
+        .header
+            | Modificar ciudad
+        .content
+            form.ui.form#editCityForm
+                .field
+                    label Ciudad
+                    input#cityInput(type='text', name='city', placeholder='Ciudad',onkeypress="this.parentElement.classList.remove('error')",value=city.City)
+                .field
+                    label Estado
+                    input#stateInput(type='text', name='state', placeholder='Estado',onkeypress="this.parentElement.classList.remove('error')", value=city.State)
+                .field
+                    label País
+                    input#countryInput(type='text', name='country', placeholder='Pais',onkeypress="this.parentElement.classList.remove('error')", value=city.Country)
+                .field
+                    label Modalidad
+                    select.ui.dropdown#selectMode(name='mode')
+                        if city.Mode==1 
+                            option(value='1' selected) General
+                            option(value='2') Específica
+                            option(value='3') Ambas
+                        else if city.Mode==2
+                            option(value='1') General
+                            option(value='2' selected) Específica
+                            option(value='3') Ambas
+                        else
+                            option(value='1') General
+                            option(value='2') Específica
+                            option(value='3' selected) Ambas
+                    p.note *La información no será eliminada, pero solo será accesible para la modalidad seleccionada.
+        .actions
+            .ui.button.cancel#cancelBtn Cancelar
+            .ui.button.black#addBtn(onclick="editCity()") Modificar
+
+    //Modal form image
+    .ui.tiny.modal.first#formImage
+        .header
+            | Agregar imagen
+        .content
+            form.ui.form#addImage
+                .field#img-div
+                    .ui.small.image
+                        img#imgFile(src="/imgs/admin/no-image.png")
+                    p#imgName Agregar imagen
+                .field
+                    input#inputFile(type="file" accept="image/*" style="display: none")
+                .field
+                    label Modalidad
+                    select.ui.dropdown#selectImageMode(name='mode')
+                        option(value='1') General
+                        option(value='2') Específica
+                        option(value='3') Ambas
+                .field
+                    label Puntaje por imagen
+                    input#valueInput(type='number', name='state', min="0",onkeypress="this.parentElement.classList.remove('error')", value="0")
+                .field
+                    label Posibles respuestas
+                    #tags
+                    input#answers(type='text', name='state',onkeypress="this.parentElement.classList.remove('error');return checkForTag(event);")
+                    .note Para separar cada respuesta presione ';'
+        .actions
+            .ui.button.cancel#cancelBtn Cancelar
+            .ui.button.black#addImageBtnF(onclick="addImage()") Aceptar
+
+        //Modal for image viewer
+        .ui.modal#image-modal
+            i.close.icon
+            .image
+                img#imgInModal(src="/imgs/admin/no-image.png")
+                .content#imgDetails
+                    p#detail-name   Imagen
+                    p#detail-points 180 Puntos
+                    p#detail-tagsText   Respuestas
+                    p#detail-tags 
+                        a.ui.label.disabled  Respuesta 1
+                        a.ui.label.disabled  Respuesta 2
+
+        //modal error
+        .ui.tiny.modal#error-modal
+            i.close.icon
+            .header
+                p#error-title
+            .content
+                p#modal-text
+            .actions
+                .ui.positive.right.labeled.icon.button
+                    | Aceptar
+                    i.checkmark.icon
+        //Success modal
+        .ui.mini.modal#success-modal
+            i.close.icon
+            .header
+                p#success-title
+            .content
+                p#modal-success-text 
+            .actions
+                .ui.positive.right.labeled.icon.button
+                    | Aceptar
+                    i.checkmark.icon
+
+        //Delete city modal
+        .ui.basic.modal#delete-modal
+            .ui.icon.header
+                i.trash.icon
+                |     ¿Seguro que desea eliminar la ciudad?
+            .content
+                p
+                    | Toda la información perteneciente a la ciudad será eliminada.
+            .actions
+                .ui.red.basic.cancel.inverted.button
+                    i.remove.icon
+                    |       Cancelar
+                .ui.green.ok.inverted.button
+                    i.checkmark.icon
+                    |       Confirmar
+    script(src="/js/imagesByCity.js")

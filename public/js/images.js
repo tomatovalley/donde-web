@@ -1,4 +1,3 @@
-$('#selectMode').dropdown();
 $('#confirm-update').modal({
     closable: false,
     transition: 'fade up',
@@ -197,7 +196,7 @@ function printCities(data){
         const images = data.mode == 1? element.ImagesM1 : element.ImagesM2;
         cards += `
         <div class="ui card">
-            <a href="/images/${element.id}">
+            <a href="/images/${element._id}">
                 <div class="image">
                     <img src="${images.length > 0? images[0].URL: '/imgs/admin/no-image.png'}">
                 </div>
@@ -223,4 +222,5 @@ function printCities(data){
     });
     
     document.getElementById('cards').innerHTML = cards;
+
 }
