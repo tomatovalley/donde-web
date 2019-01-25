@@ -26,7 +26,6 @@ apiRoutes.post('/doRegister', function(req, res){
     });
     newUser.save(function(err, usuario){
         if(err){
-            console.log(err)
             res.json({success: false, msg: "Los datos ingresados no son correctos."});
         }
         else{
@@ -42,7 +41,6 @@ apiRoutes.post('/doRegister', function(req, res){
             res.cookie('access_token',token,{
                 httpOnly:true
             })
-            res.json(userdata);
             res.json({success: true, msg: "El usuario se ha registrado exitosamente.", userdata: userdata})
         }
     });   
@@ -86,6 +84,18 @@ apiRoutes.post('/doLogin', function(req, res){
         else{
             res.json({success: false, msg: "Usuario o contraseña invalido"});
         }
+    })
+})
+
+apiRoutes.get('/getUserData', function(req, res){
+    User.findById(req.body.id,{Password: 0}, function(err, userdata){
+        if(err){
+            res.json({success:false, msg: "No se pudo obtener los datos del usuario", err: err})
+        }
+        else{ 
+            res.json({success: true, msg:"Se han obtenido los datos del usuario correctamente", userdata})
+        }
+
     })
 })
 /**
