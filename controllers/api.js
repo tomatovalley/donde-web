@@ -20,17 +20,30 @@ apiRoutes.post('/doRegister', function(req, res){
     var newUser = new User({
         Name: req.body.Name,
         Email: req.body.Email,
-        City: req.body.City,
         User: req.body.User,
         Password: bcrypt.hashSync(req.body.Password,bcrypt.genSaltSync(10)),
-        UserType: req.body.UserType
+        UserType: 3
     });
-    newUser.save(function(err){
+    newUser.save(function(err, usuario){
         if(err){
+            console.log(err)
             res.json({success: false, msg: "Los datos ingresados no son correctos."});
         }
         else{
-            res.json({success: true, msg: "El usuario se ha registrado exitosamente."})
+            let userdata = {
+                id: usuario._id,
+                user: usuario.User,
+                userType: usuario.UserType 
+            }   
+            let token = jwt.sign(userdata, config.secret, {
+                expiresIn: 86400 // expires in 24 hours
+            });
+            userdata.token = token;
+            res.cookie('access_token',token,{
+                httpOnly:true
+            })
+            res.json(userdata);
+            res.json({success: true, msg: "El usuario se ha registrado exitosamente.", userdata: userdata})
         }
     });   
 })
@@ -127,7 +140,7 @@ apiRoutes.get('/getActiveImage', function(req, res){
     })
 })
 /**
- * 
+ * Retorna la dirección de la persona
  * @param {Number} latitud Latitud de donde se quiere obtener la ciudad
  * @param {Number} longitud Longitud de donde se quiere obtener la ciudad
  * @param {function} callback Callback

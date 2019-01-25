@@ -4,7 +4,6 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('usuarios', new Schema({
   Name: {type: String, required: true},
   Email: {type: String, required: true},
-  City: {type: String, required: true},
   User: {type: String, required: true},
   Password: {type: String, required: true},
   UserType: {type: String, required: true},
