@@ -140,6 +140,10 @@ button.ui.basic.button.left{
     left: 13%;
 }
 
+#imgInModal {
+    max-width: 100%;
+}
+
 .ui.dimmer{
     background-color: rgba(0, 0, 0, 0.49);
 }

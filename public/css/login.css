@@ -44,6 +44,10 @@
     font-weight: normal !important;
 }
 
+.div-button{
+    text-align: center;
+}
+
 body{
     background-image: url("/imgs/admin/sample-background.jpg") !important;
     background-size: cover !important;

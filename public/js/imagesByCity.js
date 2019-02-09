@@ -1,6 +1,6 @@
     $('.button').popup()
     $('.ui.checkbox').checkbox()
-    
+    let deleteOption = -1 // 1 for city, 2 for images
     $('#formCiudad').modal({
         transition: 'fade up',
         closable: false, 
@@ -28,10 +28,30 @@
             document.getElementById('tags').innerHTML = ""
         }
     })
+
+    $('#delete-modal').modal({
+        onShow: function(){
+            if(deleteOption == 1){
+                document.getElementById('delete-textTitle').innerHTML = '<i class="trash icon"></i>¿Seguro que desea eliminar la información de la ciudad?'
+                document.getElementById('delete-text').innerText = 'Toda la información perteneciente a la ciudad será eliminada.'
+            }
+            else{
+                document.getElementById('delete-textTitle').innerHTML = '<i class="trash icon"></i>¿Seguro que desea eliminar las imagenes seleccionadas?'
+                document.getElementById('delete-text').innerText = 'Las imagenes seleccionadas serán removidas de manera permamente.'
+            }
+        }
+    })
     //$('#delete-modal').modal()
 
-    document.getElementById('delete').onclick = function(){
-        $('#delete-modal').modal('show')
+    function showModal(){
+        if(document.querySelectorAll('input:checked').length > 0){
+            $('#delete-modal').modal('show')
+        }
+        else{
+            document.getElementById('error-title').innerHTML = "Error";
+            document.getElementById('modal-text').innerHTML = "Debe seleccionar al menos una imagen.";
+            $('#error-modal').modal('show')
+        }
     }
 
     document.getElementById('editCity').onclick = function(){
@@ -39,7 +59,6 @@
     }
 
     document.getElementById('addImageBtn').onclick = function(){
-        document.getElementById('inputFile').click()
         $('#formImage').modal('show')
     }
 
@@ -59,6 +78,11 @@
         document.getElementById('inputFile').click()
     }
 
+    /**
+     * Para hacer que los elementos puedan ser seleccionados para eliminación,
+     * hace que les aparezca el checkbox. También hace la función de cancelar 
+     * la selección.
+     */
     document.getElementById('selectMultiBtn').onclick = function(){
         let funcion = this.classList.contains('selected')? true: false;
         let cards = document.getElementsByClassName('card')
@@ -77,6 +101,7 @@
             this.firstElementChild.classList.remove('tasks')
             this.firstElementChild.classList.add('close')
             this.firstElementChild.nextSibling.textContent = "Cancelar selección"
+            document.getElementById('eliminarImagesBtn').style.display = "inline-block"
         }
         else{
             for (let x = 0; x < cards.length; x++) {
@@ -89,7 +114,9 @@
             this.firstElementChild.classList.remove('close')
             this.firstElementChild.classList.add('tasks')
             this.firstElementChild.nextSibling.textContent = "Seleccionar elementos"
+            document.getElementById('eliminarImagesBtn').style.display = "none"
         }
+        document.getElementById('eliminarImagesBtn').classList.remove('disabled')
     }
     /**
      * 
@@ -97,13 +124,24 @@
      * @param {*} check Check id vaue
      */
     function clickImage(url, check, element){
+        if(typeof element == 'string'){
+            element = JSON.parse(element.replace(/♀/g, " "))
+        }''
         let selectMultiBtn = document.getElementById('selectMultiBtn')
-        let switchBtn = document.getElementById('selectSwitchBtn')
-        if(!selectMultiBtn.classList.contains('selected') && !switchBtn.classList.contains('selected')){
+        //let switchBtn = document.getElementById('selectSwitchBtn')
+        if(!selectMultiBtn.classList.contains('selected')/* && !switchBtn.classList.contains('selected')*/){
+            document.getElementById('detail-name').innerHTML = "ID: "+element.id
+            document.getElementById('detail-points').innerHTML = "Puntaje: "+element.Value
+            console.log(element.Tags)
+            let respuestas = "";
+            (element.Tags).forEach(function(element){
+                respuestas += `<a class="ui label disabled">${element}</a>`
+            })
+            document.getElementById('detail-tags').innerHTML = respuestas
             document.getElementById('imgInModal').src = url
             $('#image-modal').modal('show')
         }
-        else if(switchBtn.classList.contains('selected')){
+        /* else if(switchBtn.classList.contains('selected')){
             let selectedCards = document.getElementsByClassName('card-switch')
             if(selectedCards.length < 1){
                 if(element.classList.contains('card-switch'))
@@ -118,7 +156,7 @@
                 console.log(aux)
             }
 
-        }
+        } */
         else{
             check = document.getElementById('checkId'+check)
             check.checked = !check.checked;
@@ -138,8 +176,7 @@
             _id: city._id,
             City :document.getElementById('cityInput').value,
             State: document.getElementById('stateInput').value,
-            Country: document.getElementById('countryInput').value,
-            Mode: document.getElementById('selectMode').value,
+            Country: document.getElementById('countryInput').value
         }
         let http = new  XMLHttpRequest();
         http.open("PUT", "/images/editCity", true);
@@ -148,7 +185,6 @@
             if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
                 const result = JSON.parse(this.response)
                 if(result !== "" && result.success){
-                    $('#formCiudad').modal('hide')  
                     document.getElementById('success-title').innerHTML = "Ciudad modificada"
                     document.getElementById('modal-success-text').innerHTML = "La ciudad se ha modificado correctamente."
                     $('#success-modal').modal('show')
@@ -157,7 +193,6 @@
                 }
                 //Ya existe la ciudad y pide confirmación para actualizar la modalidad.
                 else if(result !== "" && result.errorCode == 101){
-                    $('#formCiudad').modal('hide')
                     document.getElementById('error-title').innerHTML = "Ciudad existente";
                     document.getElementById('modal-text').innerHTML = "Ya existe una ciudad con los mismos datos.";
                     $('#error-modal').modal('show')
@@ -166,7 +201,6 @@
                     cityToUpdate.Mode = data.Mode;
                 }
                 else{   
-                    $('#formCiudad').modal('hide')
                     document.getElementById('modal-text').innerHTML = "Error.";
                     document.getElementById('modal-text').innerHTML = "Algo ha sucedido, por favor intentelo de nuevo.";
                     $('#error-modal').modal('show')
@@ -198,7 +232,7 @@
     }
 
     /**
-     * 
+     * Agrega la imagen
      */
     function addImage(){    
         let valueInput = document.getElementById('valueInput')
@@ -211,17 +245,62 @@
             return false
         }
         document.getElementById('addImageBtnF').classList.add('loading','disabled')
-    }
+        const tagsElements = document.getElementById('tags').getElementsByTagName('a')
+        let respuestas = "" 
+        for (let item of tagsElements) {
+            respuestas += (item.innerText).trim()+";";
+        }
+        let form = document.getElementById('addImageForm')
+        let formData = new FormData()
+        formData.append('imagen', document.getElementById('inputFile').files[0]);
+        formData.append('puntuacion', form[2    ].value);
+        formData.append('respuestas', respuestas);
+        formData.append('city', city._id)
+        formData.enctype="multipart/form-data"
 
-    function filterImagesByMode(){
-        console.log(city)
-        let mode = document.getElementById('modalidad').value
+        let http = new  XMLHttpRequest();
+        http.open("PUT", "/images/addImageInCity", true);
+        
+        http.onreadystatechange = function(){
+            if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
+                response = JSON.parse(this.response)
+                if(response.success){
+                    $('#formImage').modal('hide')  
+                    document.getElementById('success-title').innerHTML = "Imagen agregada"
+                    document.getElementById('modal-success-text').innerHTML = "La imagen se ha agregado correctamente."
+                    $('#success-modal').modal('show')
+                    getImages()
+                }
+            }
+            else if(this.readyState == XMLHttpRequest.DONE){
+                document.getElementById('modal-text').innerHTML = "No se ha podido conectar al servidor, revise su conexión a internet.";
+                $('#error-modal').modal('show')
+            }
+        }
+        http.send(formData)
+        
+    }
+    /**
+     * Unicamente filtra las imagenes dependiendo del valor seleccionado en el select 'modalidad'
+     * 1: Answered = false
+     * 2: Answered = true
+     */
+    function filterImages(){
+        let mode = document.getElementById('filtro').value
+        let elements = []
         if(mode == 1){
-            printImages(city.ImagesM1)
+            (city.ImagesM1).forEach(function(element){
+                if(element.Answered == false)
+                    elements.push(element)
+            })
         }
         else if(mode == 2){
-            printImages(city.ImagesM2)
+            (city.ImagesM1).forEach(function(element){
+                if(element.Answered == true)
+                    elements.push(element)
+            })
         }
+        printImages(elements)
     }
     /**
      * Impre la información
@@ -234,18 +313,20 @@
             cards.innerHTML = ""
         let card = ""
         data.forEach(function(image, index) {
-            if(typeof image.score !== undefined)
-            card +=`<div class="ui card" onclick="clickImage('${image.URL}',${index})">
-                <div class="ui checkbox">
-                    <input class="check-input" id="checkId${index}" type="checkbox" />
-                <label></label>
-                </div>
-                <div class="card-content">
-                    <div class="position">${index+1}</div>
-                    <div class="image"><img src='${image.URL}' onerror="this.src='/imgs/admin/no-image.png'"/></div>
-                    <div class="extra content"><i class="picture icon"></i>${typeof image.Value!=='undefined'?image.Value:'0'} ${image.Value == 1?' Punto':' Puntos'}</div>
-                </div>
-            </div>`
+            let imagen = JSON.stringify(image).replace(/ /g, "♀");
+            if(typeof image.score !== undefined){
+                card += `<div class="ui card" onclick=clickImage('${image.URL}',${index},${imagen};>
+                            <div class="ui checkbox">
+                                <input class="check-input" id="checkId${index}" data-imageId="${image.id}" type="checkbox" />
+                            <label></label>
+                            </div>
+                            <div class="card-content">
+                                <div class="position">${index+1}</div>
+                                <div class="image"><img src='${image.URL}' onerror="this.src='/imgs/admin/no-image.png'"/></div>
+                                <div class="extra content"><i class="picture icon"></i>${typeof image.Value!=='undefined'?image.Value:'0'} ${image.Value == 1?' Punto':' Puntos'}</div>
+                            </div>
+                        </div>`
+            }
         });
         cards.innerHTML = card;
         
@@ -266,7 +347,9 @@
             return false
         }
     }
-
+    /**
+     * Hace que puedas cambiar los cards de posición.
+     */
     function makeCardsSwitchable(){
         let button = document.getElementById('selectSwitchBtn')
         let dimmers = document.getElementsByClassName('div-dimmer')
@@ -287,7 +370,7 @@
 
     }
     /**
-     * 
+     * Solamente deshabilita o habilita los botones de la página
      * @param {*} idException 
      * @param {*} state Recibe falso para bloquearlos y true para dejarlos activos
      */
@@ -300,4 +383,92 @@
         else
             for (let x = 0; x < buttons.length; x++)
                 buttons[x].id != idException? buttons[x].classList.remove('disabled'):''
+    }
+    /**
+     * Obtiene las imagenes de la ciudad.
+     */
+    function getImages(){
+        http = new XMLHttpRequest()
+        http.open("GET", "/images/"+city._id+"/getImagesInCity", true);
+        
+        http.onreadystatechange = function(){
+            if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
+                response = JSON.parse(this.response)
+                if(response.success){
+                    printImages(response.city, 1)
+                }
+            }
+            else if(this.readyState == XMLHttpRequest.DONE){
+                document.getElementById('modal-text').innerHTML = "No se ha podido conectar al servidor, revise su conexión a internet.";
+                $('#error-modal').modal('show')
+            }
+        }
+        http.send()
+    }
+    
+    /**
+     * Función del botón de delete del modal, sirve para eliminar ya sea la ciudad o imagenes
+     * Utiliza la variable global 'deleteOption' con los siguientes valores.
+     *  1: para eliminar la ciudad.
+     *  2: para eliminar imagenes.
+     **/
+    function deleteButton(){
+        if(deleteOption == 1){
+            document.getElementById('deleteBtn').classList.add('loading')
+            http = new XMLHttpRequest()
+            http.open("DELETE", "/images/deleteCity", true);
+            http.setRequestHeader('Content-type', 'application/json');
+            http.onreadystatechange = function(){
+                if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
+                    response = JSON.parse(this.response)
+                    if(response.success){
+                        $('#delete-modal').modal('hide')  
+                        document.getElementById('success-title').innerHTML = "Eliminación éxitosa"
+                        document.getElementById('modal-success-text').innerHTML = "La ciudad se ha correctamente."
+                        $('#success-modal').modal('show')
+                        $('#success-modal').modal({onHidden: function(){
+                            window.location.replace('http:/images')
+                        }})
+                    }
+                }
+                else if(this.readyState == XMLHttpRequest.DONE){
+                    document.getElementById('modal-text').innerHTML = "No se ha podido conectar al servidor, revise su conexión a internet.";
+                    $('#error-modal').modal('show')
+                }
+                document.getElementById('selectMultiBtn').click()
+                document.getElementById('deleteBtn').classList.remove('loading')
+            }
+            http.send(JSON.stringify({city_id: city._id}))
+        }
+        else if(deleteOption == 2){
+            let checks = document.querySelectorAll('.check-input:checked')
+            let toDeleteIds = [];
+            document.getElementById('deleteBtn').classList.add('loading')
+            checks.forEach(function(element){
+                toDeleteIds.push(element.getAttribute('data-imageid'))
+            })
+            http = new XMLHttpRequest()
+            data = {ids: toDeleteIds}
+            http.open("PUT", "/images/"+city._id+"/deleteImagesM1", true);
+            http.setRequestHeader('Content-type', 'application/json');
+            http.onreadystatechange = function(){
+                if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
+                    response = JSON.parse(this.response)
+                    if(response.success){
+                        $('#delete-modal').modal('hide')  
+                        document.getElementById('success-title').innerHTML = "Eliminación éxitosa"
+                        document.getElementById('modal-success-text').innerHTML = "Las imagenes se han eliminado correctamente."
+                        $('#success-modal').modal('show')
+                        getImages()
+                    }
+                }
+                else if(this.readyState == XMLHttpRequest.DONE){
+                    document.getElementById('modal-text').innerHTML = "No se ha podido conectar al servidor, revise su conexión a internet.";
+                    $('#error-modal').modal('show')
+                }
+                document.getElementById('selectMultiBtn').click()
+                document.getElementById('deleteBtn').classList.remove('loading')
+            }
+            http.send(JSON.stringify(data))
+        }
     }

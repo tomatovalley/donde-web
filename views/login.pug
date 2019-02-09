@@ -22,7 +22,8 @@ html
                         .ui.left.icon.input
                             input(type='password' name='contraseña' placeholder='Contraseña' id="pass" class="input-trans")
                             <i class="lock icon"></i>
-                button.ui.button(onclick="doLogin()") Iniciar sesión
+                .div-button
+                    button.ui.button(onclick="doLogin()") Iniciar sesión
         .ui.page.dimmer
             .content
                 .ui.massive.text.loader

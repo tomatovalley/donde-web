@@ -9,7 +9,6 @@ var imagesRoutes = require('./controllers/images');
 var usersRoutes = require('./controllers/users');
 var config = require('./config');
 var cookieParser = require('cookie-parser');
-
 mongoose.connect(config.database,function(err){
     if(err){
         console.log("Error en la conexión con la base de datos");
@@ -23,10 +22,14 @@ app.set('views', './views');
 app.set('view engine', 'pug');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({
-    extended: false
+    limit: '15mb',
+    extended: true
+}))
+app.use(bodyParser.json({
+    limit: '15mb',
+    extended: true
 }));
 app.use(cookieParser());
-app.use(bodyParser.json());
 // use morgan to log requests to the console
 app.use(morgan('dev'));
 app.use('/api', apiRoutes);
