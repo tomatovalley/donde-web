@@ -7,7 +7,6 @@ var jwt = require('jsonwebtoken');
 var config = require('../config');
 var nodeGeocoder = require('node-geocoder');
 var ObjectID = require("mongodb").ObjectID;
-var mongodb = require("mongodb");
 
 apiRoutes.get('/', function(req, res) {
     res.json({
@@ -87,6 +86,18 @@ apiRoutes.post('/doLogin', function(req, res){
     })
 })
 
+apiRoutes.get('/doLogout', function(req, res){
+    console.log('simon')
+    res.clearCookie("access_token")
+    res.json({success:true, msg:"Se ha cerrado la sesión exitosamente"})
+})
+/**
+ * Devuelve la información del usuario a partir de su id
+ * Recibe
+ * {
+ *   id: Id del usuario
+ * }
+ */
 apiRoutes.get('/getUserData', function(req, res){
     User.findById(req.body.id,{Password: 0}, function(err, userdata){
         if(err){

@@ -10,6 +10,8 @@ html
         a.item#sidebar-button
             i.sidebar.icon
             |     Menu
+        .div(style="text-align: right; width:100%; margin:2px;margin-right:10px")
+            img(src="/imgs/admin/dondeBlanco.png", alt="Logo de donde" height="40px;")
             
     .ui.bottom.attached.segment.pushable
         .ui.inverted.labeled.icon.left.inline.vertical.sidebar.menu#sidebar
@@ -22,7 +24,7 @@ html
             a.item(href="/images")
                 i.smile.icon.camera.retro
                 |     Imagenes
-            a.item
+            a.item#logout
                 i.icon.logout
                 |     Salir
         .pusher
@@ -33,9 +35,37 @@ html
                 p
                 p
                 p
+    
+    //Modal para cerrar sesión
+    .ui.tiny.modal#modal-logout
+        .header
+            | Cerrar sesión
+        .content
+            p   ¿Esta seguro que desea cerrar sesión?
+        .actions
+            .ui.labeled.icon.button.negative
+                i.cancel.icon
+                |   Cancelar
+            .ui.labeled.icon.button.positive(onclick="logout()")
+                i.check.icon
+                |   Confirmar
     script.
         $('#sidebar')
             .sidebar({
                 context: $('.bottom.segment')
             })
             .sidebar('attach events', '.menu #sidebar-button');
+
+        $('#modal-logout').modal('attach events', '#logout', 'show');
+
+        function logout(){
+            let http = new  XMLHttpRequest();
+            http.open("GET", "/api/doLogout", true);
+            
+            http.onreadystatechange = function(){
+                if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
+                    window.location.replace('/')
+                }
+            }
+            http.send()
+        }
