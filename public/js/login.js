@@ -16,8 +16,12 @@ function doLogin(){
             const response = JSON.parse(Http.response);
             $('.dimmer').dimmer('hide');
             if(response.success){
-                if(response.userType == 1){
+                if(response.userType == 1 || response.userType == 2){
                     window.location.href = '/home';
+                }
+                else if(response.userType == 3){
+                    document.getElementById('modal-text').innerHTML = "Usuario o contraseña invalida."
+                    $('.tiny.modal').modal('show');
                 }
             }
             else{

@@ -19,13 +19,13 @@ imagesRoutes.use(function (req, res, next) {
             success: false,
             message: 'Failed to authenticate token.'
           });
-          res.render('<h1>Acceso denegado</h1>')
+          res.end('<h1>Acceso denegado</h1>')
         } else {
           if(decoded.userType==1 || decoded.userType==2){
             next();
           }
           else{
-            res.render('<h1>Acceso denegado</h1>')
+            res.end('<h1>Acceso denegado</h1>')
           }
           // if everything is good, save to request for use in other router
         }
