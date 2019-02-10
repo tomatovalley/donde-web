@@ -9,38 +9,136 @@ block content
             i.users.icon
 
     .ui.divider
+    if (userType == 1)
+        .container.admin(style="padding: 0px 20px 0px 20px;")
+            h2  Administradores
+            table.ui.table
+                thead
+                    tr
+                        th  USUARIO
+                        th  NOMBRE
+                        th  CORREO
+                        th  ESTATUS
+                        th
+                tbody#adminsTableBody
+                    each admin in admins
+                        tr(style="font-size: 16px;")
+                            td.four.wide=admin.User
+                            td.four.wide=admin.Name
+                            td.four.wide=admin.Email
+                            td.four.wide
+                                .ui.buttons
+                                    if admin.Status
+                                        button.ui.positive.button(onclick=`changeUserStatus('${admin._id}', true)`)   Activo
+                                        .or(data-text="O")
+                                        button.ui.button(onclick=`changeUserStatus('${admin._id}', false)`)   Bloqueado
+                                    else 
+                                        button.ui.button(onclick=`changeUserStatus('${admin._id}', true)`)   Activo
+                                        .or(data-text="O")
+                                        button.ui.negative.button(onclick=`changeUserStatus('${admin._id}', false)`)   Bloqueado
+                            td.two.wide(style="font-size: 20px;")
+                                i.trash.icon.red(onclick=`showDeleteModal('${admin._id}')`)
+                                
+            button.ui.primary.button#btnModalAdmin(style="float:right;")
+                | Agregar administrador 
+        br
+        //Modal form admin
+        .ui.tiny.modal.first.modal-admin#formAdminModal
+            .header
+                | Nuevo administrador
+            .content
+                form.ui.form#addAdminForm
+                    .field
+                        label Usuario
+                        input#userInput(type='text', name='user', placeholder='Usuario',onkeypress="this.parentElement.classList.remove('error')")
+                    .field
+                        label Contraseña
+                        input#passInput(type='text', name='user', placeholder='Usuario',onkeypress="this.parentElement.classList.remove('error')")
+                    .field
+                        label Nombre
+                        input#nameInput(type='text', name='name', placeholder='Nombre',onkeypress="this.parentElement.classList.remove('error')")
+                    .field
+                        label Correo
+                        input#emailInput(type='email', name='email', placeholder='Correo',onkeypress="this.parentElement.classList.remove('error')")
+            
+            .actions
+                .ui.button.cancel#cancelBtn Cancelar
+                .ui.button.black#addBtn(onclick="addAdmin()") Agregar
 
-    table.ui.five.column.table
-        thead
-            tr
-                th
-                    font(style='vertical-align: inherit;') IMAGEN
-                th
-                    font(style='vertical-align: inherit;') NOMBRE
-                th
-                    font(style='vertical-align: inherit;') CIUDAD
-                th
-                    font(style='vertical-align: inherit;') PUNTUACIÓN
-                th
-                    font(style='vertical-align: inherit;') STATUS
-        tbody
-            tr
-                td
-                    font(style='vertical-align: inherit;')
-                        img(src="", alt="")
-                td
-                    font(style='vertical-align: inherit;') Scott
-                td
-                    font(style='vertical-align: inherit;') Mazatlán
-                td
-                    font(style='vertical-align: inherit;') 350 
-                    i.diamond.icon
-                td
-                    font(style='vertical-align: inherit;')
-                        .ui.buttons
-                            button.ui.positive.button
-                                font(style='vertical-align: inherit;') Activo
-                            .or
-                            button.ui.negative.button
-                                font(style='vertical-align: inherit;') Bloqueado
-    
+        .ui.mini.modal.modal-admin#error-modal-admin
+            i.close.icon
+            .header
+                | Error
+            .image.content
+                .description(style="width:100%;")
+                    p#modal-text-admin
+            .actions
+                .ui.positive.right.labeled.icon.button
+                    | Aceptar
+                    i.checkmark.icon
+        script(src="/js/users-admin.js")
+
+            
+    .container(style="margin-top: 10px;padding: 0px 20px 0px 20px;")
+        h2 Usuarios
+        table.ui.table
+            thead
+                tr
+                    th  USUARIO
+                    th  NOMBRE
+                    th  CORREO
+                    th  PUNTUACIÓN
+                    th  ESTATUS
+                    th
+            tbody#usersTableBody
+                each user in users
+                    tr(style="font-size: 16px;")
+                        td=user.User    
+                        td=user.Name
+                        td=user.Email
+                        td
+                            i.diamond.icon
+                            div(style="display: inline-block;width:50%")=user.Score
+                        td
+                            .ui.buttons
+                                if user.Status
+                                    button.ui.positive.button(onclick=`changeUserStatus('${user._id}', true)`)   Activo
+                                    .or(data-text="O")
+                                    button.ui.button(onclick=`changeUserStatus('${user._id}', false)`)   Bloqueado
+                                else 
+                                    button.ui.button(onclick=`changeUserStatus('${user._id}', true)`)   Activo
+                                    .or(data-text="O")
+                                    button.ui.negative.button(onclick=`changeUserStatus('${user._id}', false)`)   Bloqueado
+                        td(style="font-size: 20px;")
+                            i.trash.icon.red(onclick=`showDeleteModal('${user._id}')`)
+    br
+    br
+    br
+    .ui.tiny.modal#error-modal
+            i.close.icon
+            .header
+                | Error
+            .image.content
+                .description
+                    p#modal-text
+            .actions
+                .ui.positive.right.labeled.icon.button
+                    | Aceptar
+                    i.checkmark.icon
+    //Modal delete
+    .ui.tiny.modal#confirm-delete
+        .header
+            |   Eliminar usuario
+        .content
+            p   ¿Seguro que desea eliminar el usuario?
+        .actions
+            .ui.labeled.icon.button.negative
+                i.cancel.icon
+                |   Cancelar
+            .ui.labeled.icon.button.positive#confirmUpdate
+                i.check.icon
+                |   Confirmar
+
+    script.
+        let users = !{JSON.stringify(users)};
+    script(src="/js/users.js")

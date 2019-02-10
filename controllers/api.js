@@ -25,7 +25,10 @@ apiRoutes.post('/doRegister', function(req, res){
     });
     newUser.save(function(err, usuario){
         if(err){
-            res.json({success: false, msg: "Los datos ingresados no son correctos."});
+            if(err.code == 11000)
+                res.json({success: false, msg: "El usuario ya esta en uso."});
+            else
+                res.json({success: false, msg: "Los datos ingresados no son correctos."});
         }
         else{
             let userdata = {
@@ -48,8 +51,8 @@ apiRoutes.post('/doRegister', function(req, res){
 apiRoutes.post('/doLogin', function(req, res){
     User.findOne({
         User: req.body.User 
-    },['_id', 'User', 'Password','UserType'], function(err, usuario){
-        if(err){   
+    },['_id', 'User', 'Password','UserType','Status'], function(err, usuario){
+        if(err){
             res.json({success: false, msg: "Algo malo sucedió en la consulta."})
         }
         else if(usuario){
@@ -59,6 +62,9 @@ apiRoutes.post('/doLogin', function(req, res){
                    res.json({success: false, msg: "Algo ha salido mal."});
                 }
                 else if(response){
+                    if(!usuario.Status){
+                        return res.json({success: false, msg: "El usuario ha sido desactivado."})
+                    }
                     var userdata = {
                         id: usuario._id,
                         user: usuario.User,
@@ -87,7 +93,6 @@ apiRoutes.post('/doLogin', function(req, res){
 })
 
 apiRoutes.get('/doLogout', function(req, res){
-    console.log('simon')
     res.clearCookie("access_token")
     res.json({success:true, msg:"Se ha cerrado la sesión exitosamente"})
 })

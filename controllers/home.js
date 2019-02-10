@@ -13,8 +13,12 @@ homeRoutes.use(function (req, res, next) {
             success: false,
             message: 'Failed to authenticate token.'
           });
-          res.render('<h1>Acceso denegado</h1>')
+          res.end('<h1>Acceso denegado</h1>')
         } else {
+          if(decoded.userType == 3){
+            res.clearCookie('access_token')
+            return res.redirect('/');
+          }
           // if everything is good, save to request for use in other routes
           req.user = decoded;
           next();
