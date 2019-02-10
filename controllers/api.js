@@ -172,6 +172,8 @@ apiRoutes.get('/getActiveImage', function(req, res){
  * @param {function} callback Callback
  */
 function getAddress(latitud, longitud, callback){
+    console.log(latitud)
+    console.log(longitud)
     let options = {
         provider: 'here',
         appId: config.here.appId,
@@ -207,7 +209,7 @@ apiRoutes.get('/checkAnswer', function(req, res){
         {
             $match: {'_id': ObjectID(ciudad_id), 'ImagesM1.Active': true}
         },{
-            $project: {'ImagesM1.Tags': 1, 'ImagesM1.Value':1}
+            $project: {'ImagesM1.id': 1,'ImagesM1.Tags': 1, 'ImagesM1.Value':1}
         }], function(err, result){
         if(err){
             res.json({success: false, msg: "Algo ha sucedido", err: err})
@@ -225,12 +227,20 @@ apiRoutes.get('/checkAnswer', function(req, res){
                     }
                 });
                 if(isAnswerCorrect){
-                    addScore(req.body.user_id, result[0].ImagesM1.Value, 1, function(success){
-                        if(success){
-                            res.json({success: true, isAnswerCorrect: true, msg: "Felicidades has contestado correctamente."})
-                        }
-                        else{
-                            res.json({success: false, isAnswerCorrect: true, msg: "Se ha contestado correctamente pero no se ha podido actualizar el perfil."}) 
+                    setImageAsAnswered(result[0].ImagesM1.id,function(correcto){
+                        if(correcto){
+                            selextNextImage(function(resp){
+                                if(resp){
+                                    addScore(req.body.user_id, result[0].ImagesM1.Value, 1, function(success){
+                                        if(success){
+                                            res.json({success: true, isAnswerCorrect: true, msg: "Felicidades has contestado correctamente.", value: result[0].ImagesM1.Value})
+                                        }
+                                        else{
+                                            res.json({success: false, isAnswerCorrect: true, msg: "Se ha contestado correctamente pero no se ha podido actualizar el perfil."}) 
+                                        }
+                                    })
+                                }
+                            })
                         }
                     })
                 }
@@ -272,6 +282,32 @@ function addScore(user_id, score, mode, callback){
                 callback(true)
             }
         })
+}
+
+function setImageAsAnswered(imageId, fn){
+    Images.update(
+        {"ImagesM1.id": imageId},
+        {$set : { "ImagesM1.$.Answered" : true, "ImagesM1.$.Active": false}},
+        function(err, res){
+            if(err)
+                fn(false)
+            else
+                fn(true)
+        })
+}
+
+function selextNextImage(fn){
+    Images.findOneAndUpdate(
+        {"ImagesM1.Answered": false},
+        {$set : { "ImagesM1.$.Active" : true }}, 
+        function(err, res){
+            if(err)
+                fn(false)
+            else{
+                fn(true)
+            }
+        }
+    )
 }
 
 module.exports = apiRoutes;
