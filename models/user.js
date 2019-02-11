@@ -14,12 +14,10 @@ module.exports = mongoose.model('usuarios', new Schema({
   User: {type: String, required: true},
   Password: {type: String, required: true},
   UserType: {type: String, required: true},
-  ScoresM1: {
+  Scores: {
       score: {type: Number},
+      mode: {type: Number},
       date: {type: Date}  
-  },
-  ScoresM2:{
-
   },
   JoinedAT: {type: Date, default: Date.now},
   Status: {type: Boolean, default: true}

@@ -1,65 +1,48 @@
 extends ../layouts/admin-layout
 block content
-  
+    link(rel="stylesheet", href="css/home.css")
     .ui.segments
         .ui.segment
-            h3.ui.center.aligned.header
-                font(style='vertical-align: inherit;') MEJORES PUNTAJES
+            h3.ui.center.aligned.header   MEJORES PUNTAJES
                     i.trophy.icon
         .ui.segments
             .ui.horizontal.segments
-                .ui.center.aligned.black.inverted.segment
-                    p
-                        font(style='vertical-align: inherit;') IMAGEN
-                .ui.center.aligned.black.inverted.segment
-                    p
-                        font(style='vertical-align: inherit;') NOMBRE
-                .ui.center.aligned.black.inverted.segment
-                    p
-                        font(style='vertical-align: inherit;') CIUDAD
-                .ui.center.aligned.black.inverted.segment
-                    p
-                        font(style='vertical-align: inherit;') PUNTUACIÓN
-                .ui.center.aligned.black.inverted.segment
-                    p
-                        font(style='vertical-align: inherit;') POSICIÓN
-            .ui.horizontal.segments
-                .ui.center.aligned.segment
-                    p
-                        font(style='vertical-align: inherit;')
-                            img(src="", alt="")
-                .ui.left.aligned.segment
-                    p
-                        font(style='vertical-align: inherit;') Scott
-                .ui.left.aligned.segment
-                    p
-                        font(style='vertical-align: inherit;') Mazatlán
-                .ui.left.aligned.segment
-                    p
-                        font(style='vertical-align: inherit;') 350
-                            i.diamond.icon
-                .ui.left.aligned.segment
-                    p
-                        font(style='vertical-align: inherit;') 1°
-                            i.trophy.icon
+                table.ui.basic.table
+                    thead
+                        tr
+                        th NOMBRE
+                        th CORREO
+                        th PUNTUACIÓN
+                        th POSICIÓN
+                    tbody
+                        each score, $index in highestScores
+                            tr
+                                td=score.Name
+                                td=score.Email
+                                td 
+                                    i.diamond.icon
+                                    =score.Score
+                                td=$index+1
+                                    |   
+                                    i.trophy.icon
+            br
             .ui.segment
-                h3.ui.center.aligned.header
-                    font(style='vertical-align: inherit;') ACTIVIDAD RECIENTE
-                    .ui.segments
-                .ui.horizontal.segments
-                    .ui.black.inverted.segment
-                    .ui.center.aligned.black.inverted.segment
-                        p
-                            font(style='vertical-align: inherit;') Aquí va la imagen del jugador  
-                                br
-                                img(src="", alt="")
-                                font(style='vertical-align: inherit;') 350
-                                i.diamond.icon
-                    .ui.center.aligned.black.inverted.segment
-                        p
-                            font(style='vertical-align: inherit;') Scott ha ganado 15 puntos
-                            i.diamond.icon
-                    .ui.center.aligned.black.inverted.segment
-                        p
-                            font(style='vertical-align: inherit;') Descubrió el sitio en Los Mochis
-                    .ui.black.inverted.segment
+                h3.ui.center.aligned.header  ACTIVIDAD RECIENTE
+                .ui.segments
+                    .ui.horizontal.segments
+                        table.ui.basic.table
+                            thead
+                                tr
+                                th NOMBRE
+                                th PUNTUACIÓN
+                                th FECHA
+                            tbody
+                                each recent, $index in recents
+                                    tr
+                                        td=recent.Name
+                                        td 
+                                            i.diamond.icon
+                                            =recent.Scores.score
+                                        td=(new Date(recent.Scores.date).getDate()+'/'+(new Date(recent.Scores.date).getMonth()+1)+'/'+new Date(recent.Scores.date).getFullYear())
+                                            |   
+                                            i.trophy.icon

@@ -252,6 +252,12 @@
         }
         let form = document.getElementById('addImageForm')
         let formData = new FormData()
+        if(document.getElementById('cards').childNodes.length == 0){
+            formData.append('Active', true)
+        }
+        else{
+            formData.append('Active', false)
+        }
         formData.append('imagen', document.getElementById('inputFile').files[0]);
         formData.append('puntuacion', form[2    ].value);
         formData.append('respuestas', respuestas);

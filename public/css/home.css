@@ -1,3 +1,21 @@
 .tools{
     text-align: center;
 }
+
+thead tr th{
+    color: white !important; 
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    background-color:#1b1c1d!important;
+    padding: 1em 1em !important;
+    text-align: center !important;
+}
+
+tbody tr td{
+    text-align: center !important;
+}
+
+body{
+    overflow: hidden;
+}

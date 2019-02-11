@@ -2,6 +2,7 @@ var express = require('express');
 var homeRoutes = express.Router();
 var jwt = require('jsonwebtoken');
 var config = require('../config');
+var User = require('../models/user.js');
 
 homeRoutes.use(function (req, res, next) {
     //console.log(req.headers);
@@ -35,8 +36,71 @@ homeRoutes.use(function (req, res, next) {
 });
 
 homeRoutes.get('/', function(req, res) {
-  res.render('home', {title: "Inicio - Donde"});
+  getUsers(function(success, rs = undefined){
+    if(success){
+      getRecent(function(exito, result = undefined){
+        if(exito){
+          console.log(result)
+          res.render('home', {title: "Inicio - Donde", highestScores: rs, recents: result});
+        }
+        else{
+          res.json({success:false, msg:"Algo sucedió"})
+        }
+      })
+    }
+    else{
+      res.json({success:false, msg:"Algo sucedió"})
+    }
+  })
+  //res.render('home', {title: "Inicio - Donde"});
 })
 
+function getUsers(fn){
+  User.aggregate(
+    [ 
+      {'$addFields':
+        { 
+          'Score': {'$sum': '$Scores.score'}            
+        }
+      },
+      {
+        $sort: {'Score': -1}
+      },
+      {
+        $limit: 5
+      }
+    ], 
+    function(err, res){
+      if(err){
+        fn(false)
+      }
+      else{
+        fn(true, res)
+      } 
+    })
+  }
+
+  function getRecent(fn){
+    User.aggregate(
+      [ 
+        {
+          $unwind: '$Scores',
+        }
+        ,{
+          $sort: {'Scores.date': -1}
+        },
+        {
+          $limit: 5
+        }
+      ], 
+      function(err, res){
+        if(err){
+          fn(false)
+        }
+        else{
+          fn(true, res)
+        } 
+      })
+  }
 
 module.exports = homeRoutes;

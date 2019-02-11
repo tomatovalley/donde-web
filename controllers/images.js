@@ -41,14 +41,13 @@ imagesRoutes.use(function (req, res, next) {
 });
 
 imagesRoutes.get('/', function(req, res) {
-    //1 stands for the modality por region
-    //Images.find({$or:[{Mode: 1},{Mode:3}]},function(err, rs){
     Images.find({},function(err, rs){
       if(err){
         const errorMsg = 'No se pudo obtener información de la base de datos';
         return res.render('images', {title: "Imágenes - Donde", success: false, msg: errorMsg});
       }
       else{
+        console.log(rs)
         res.render('images/images', {title: "Imágenes - Donde", cities: rs});
       }
     })
@@ -188,7 +187,7 @@ imagesRoutes.put('/addImageInCity',upload.single('imagen'), function(req, res){
         URL: result.url,
         Answered: false,
         Tags: respuestas,
-        Active: false,
+        Active: req.body.Active,
         Value: req.body.puntuacion
       }
       Images.update({_id: req.body.city}, {$push: {ImagesM1: values} },function(err, resp){
