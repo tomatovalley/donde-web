@@ -67,7 +67,6 @@ imagesRoutes.get('/cities/:city', function(req, res) {
 })
 
 imagesRoutes.get('/getCities',function(req, res){  
-  console.log('simon')
   //Images.find({$or:[{Mode:req.params.mode},{Mode: 3}]},function(err,rs){
     Images.find({},function(err,rs){
     if(err){
