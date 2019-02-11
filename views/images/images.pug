@@ -3,7 +3,7 @@ block content
     link(rel="stylesheet", type="text/css", href="/css/images.css")
     .tools.computer.only
         .ui.buttons#modalidad
-            button.ui.button#porRegion.active(onclick="changeMode(1)") Por region
+            button.ui.button#porRegion.active(onclick="changeMode(1)") Por región
             .or(data-text="O")
             button.ui.button#global(onclick="changeMode(2)") Global
         
@@ -172,6 +172,7 @@ block content
                     label Opciones de respuestas (3 máximas)
                     #tags
                     input#answers(type='text', name='state',onkeypress="this.parentElement.classList.remove('error');return checkForTag(event);")
+                    .note Ingrese primero la respuesta correcta.
                     .note Para separar cada respuesta presione ';'
         .actions
             .ui.button.cancel#cancelBtn Cancelar
