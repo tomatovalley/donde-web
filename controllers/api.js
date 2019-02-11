@@ -342,20 +342,18 @@ apiRoutes.get('/checkAnswerGlobal', function(req, res){
  * @param {Number} mode Modalidad en la que se hará el update
  */
 function addScore(user_id, score, mode, callback){
-    mode = mode == 1 ? "ScoresM1" : "ScoresM2"
-    let push = {}
-    push[mode] = {
-        score: score,
-        date: new Date()
-    }
-    User.update(
+    User.updateOne(
         {
             "_id": user_id
         },{
-            $push: push
-        }, function(err){
+            $push: {
+                Scores:{
+                    score: score,
+                    mode: mode,
+                    date: new Date()
+            }}
+        }, function(err, raw){
             if(err){
-                console.log(err)
                 callback(false)
             }
             else{
