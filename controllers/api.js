@@ -2,6 +2,7 @@ var express = require('express');
 var apiRoutes = express.Router();
 var User = require('../models/user');
 var Images = require('../models/images');
+var ImagesM2 = require('../models/imagesM2');
 var bcrypt = require('bcrypt-nodejs');
 var jwt = require('jsonwebtoken');
 var config = require('../config');
@@ -36,9 +37,7 @@ apiRoutes.post('/doRegister', function(req, res){
                 user: usuario.User,
                 userType: usuario.UserType 
             }   
-            let token = jwt.sign(userdata, config.secret, {
-                expiresIn: 86400 // expires in 24 hours
-            });
+            let token = jwt.sign(userdata, config.secret);
             userdata.token = token;
             res.cookie('access_token',token,{
                 httpOnly:true
@@ -70,9 +69,7 @@ apiRoutes.post('/doLogin', function(req, res){
                         user: usuario.User,
                         userType: usuario.UserType 
                     }   
-                    var token = jwt.sign(userdata, config.secret, {
-                        expiresIn: 86400 // expires in 24 hours
-                    });
+                    var token = jwt.sign(userdata, config.secret);
                     userdata.token = token;
                     userdata.success = true;
                     res.cookie('access_token',token,{
@@ -255,6 +252,89 @@ apiRoutes.get('/checkAnswer', function(req, res){
     })
 })
 /**
+ * Devuelve la imagen que debe contestar el usuario.
+ * Recibe
+ * {
+ *  _id: El id del usuario
+ * }
+ */
+apiRoutes.get('/getImageGlobal', function(req, res){
+    User.findById(req.body._id,'M2Progress', function(err, result){
+        if(err){
+            res.json({success: false, msg:"Algo ha sucedido."})
+        }
+        else if(result){
+            ImagesM2.find({}, function(err, rs){
+                if(err)
+                    res.json({success: false, msg:"Algo ha sucedido."})
+                else{
+                    let rslt = result.toObject()
+                    if(rslt.M2Progress == "" || rslt.M2Progress == undefined){
+                        rs[0].Answers = shuffle(rs[0].Answers)
+                        res.json({success: true, rs: rs[0]})
+                    }
+                    else{
+                        for (let x = 0; x < rs.length; x++) {
+                            const element = rs[x];
+                            if(element._id == rslt.M2Progress){
+                                if(rs[x+1] != undefined){
+                                    rs[x+1].Answers = shuffle(rs[x+1].Answers)
+                                    return res.json({success: true, rs: rs[x+1]})        
+                                }
+                                else{
+                                    return res.json({success: true, rs: null, msg:"Esperando por más imagenes"})        
+                                }
+                            }   
+                        }
+                    }
+                }
+            })
+            //res.json({success: true, user: result.M})
+        }
+        else{
+            res.json({success: false, msg:"No se encontró el usuario"})
+        }
+    })
+})
+
+/**
+ * Checa que la respuesta ingresada sea correcta
+ * Recibe:
+ * {
+ *  _id: El id de la imagen respondida
+ *  user_id: El id del usuario
+ *  respuesta: La respuesta del usuario.
+ * }
+ */
+apiRoutes.get('/checkAnswerGlobal', function(req, res){
+    let respuesta = req.body.respuesta
+    if(req.body.user_id == undefined)
+        return res.json({success:false, msg: "No se mandaron los datos necesarios."})
+    ImagesM2.findById(req.body._id, function(err, result){
+        if(err){
+            console.log(err)
+            res.json({success: false, msg:"Algo ha sucedido"})
+        }
+        else{
+            if(result.Answers[0] == respuesta){
+                addScore(req.body.user_id, result.Value, 2, function(rs){
+                    if(rs){
+                        res.json({success:true, correcto: true, msg:"La respuesta es correcta.", puntos: result.Value})
+                    }
+                    else{
+                        res.json({success:true, correcto: true, msg:"La respuesta es correcta.", puntos: result.Value})
+                    }
+                })
+            }
+            else{
+                res.json({success:true, correcto: false, msg:"Respuesta incorrecta.", puntos: 0})
+            }
+
+        }
+    })
+})
+
+/**
  * Hace un update de los scores del usuario
  * @param {Number} user_id Id del usuario al que se le hará el update
  * @param {Number} score Puntaje que se añadirá al usuario
@@ -283,7 +363,11 @@ function addScore(user_id, score, mode, callback){
             }
         })
 }
-
+/**
+ * Marca la imagen como respondidad en la la
+ * @param {Number} imageId El id de la imagen que se quiere marcar como respondida
+ * @param {Function} fn Callback
+ */
 function setImageAsAnswered(imageId, fn){
     Images.update(
         {"ImagesM1.id": imageId},
@@ -309,6 +393,23 @@ function selextNextImage(fn){
         }
     )
 }
+/**
+ * La utilizo para cambiar el orden de las opciones de resuesta.
+ * @param {Array} array Array de datos a sortear
+ */
+function shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+    while (0 !== currentIndex) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+    return array;
+  }
+
+
 
 module.exports = apiRoutes;
 

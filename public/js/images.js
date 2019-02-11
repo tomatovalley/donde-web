@@ -330,7 +330,7 @@ function printImagesM2(data){
             document.getElementById('detail-name').innerHTML = "ID: "+element.id
             document.getElementById('detail-points').innerHTML = "Puntaje: "+element.Value
             let respuestas = "";
-            (element.Tags).forEach(function(element){
+            (element.Answers).forEach(function(element){
                 respuestas += `<a class="ui label disabled">${element}</a>`
             })
             document.getElementById('detail-tags').innerHTML = respuestas
