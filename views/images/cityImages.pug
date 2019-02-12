@@ -38,6 +38,7 @@ block content
             
     br
     .ui.link.cards.five.column.grid.doubling.stackable#cards
+        -   let position = 1
         each image, index in city.ImagesM1  
             if image.Answered == false
                 .ui.card(onclick=`clickImage('${image.URL}',${index}, ${JSON.stringify(image)})`)
@@ -50,8 +51,7 @@ block content
                                 h2.ui.inverted.header Title 
                                 .ui.primary.button Add
                                 .ui.button View
-                            
-                        .position=index+1
+                        .position=(position++)
                         .image
                             img(src=`${image.URL}` onerror='this.src="/imgs/admin/no-image.png"')
                         .extra.content

@@ -20,7 +20,6 @@ $('#formCiudad').modal({
         document.getElementById('addBtn').classList.remove('loading','disabled')
     }
 })
-
 $('#formImage').modal({
     transition: 'fade up',
     closable: false, 
@@ -66,7 +65,7 @@ document.getElementById('selectMultiBtn').onclick = function(){
         for (let x = 0; x < cards.length; x++) {
             checks[x].parentElement.style.display = 'inline-block'
             position[x].style.display = 'none'
-            if(buttons[x].id != 'selectMultiBtn'){
+            if(typeof buttons[x] !== 'undefined' && buttons[x].id != 'selectMultiBtn'){
                 buttons[x].classList.add('disabled')
             }
         }
@@ -396,14 +395,21 @@ function printImagesM2(data){
      */
     function addImage(){    
         let valueInput = document.getElementById('valueInput')
+        hasError = false
         if(valueInput.value < 0 || valueInput.value == ""){
             valueInput.parentElement.classList.add("error")
-            return false
+            hasError = true
         }
         if(document.getElementById('tags').childElementCount == 0){
             document.getElementById('tags').parentElement.classList.add('error')
-            return false
+            hasError = true
         }
+        if(document.getElementById('inputFile').value == ""){
+            document.getElementById('imgName').style.color = '#9f3a38';   
+            hasError = true
+        }
+        if(hasError)
+            return
         document.getElementById('addImageBtnF').classList.add('loading','disabled')
         const tagsElements = document.getElementById('tags').getElementsByTagName('a')
         let respuestas = "" 
@@ -462,6 +468,7 @@ function printImagesM2(data){
     }
 
     document.getElementById('inputFile').onchange = function(){
+        document.getElementById('imgName').style.color = 'black';
         let file = document.getElementById('inputFile').files[0];
         let reader = new FileReader();
         let imgElem = document.getElementById('imgFile')

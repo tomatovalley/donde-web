@@ -99,6 +99,12 @@ div.ui.selection.dropdown, div.ui.icon.input{
     bottom: 0%;
 }
 
+#imgName{
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    font-size: .92857143em;
+    font-weight: 700;
+}
+
 #imgDetails #detail-tags{
     float: left;
     margin-left: 30px;

@@ -109,3 +109,15 @@ function showDeleteModal(user_id){
     }
     $('#confirm-delete').modal('show')
 }
+
+function filter(){
+    const users = $('#usersTableBody tr')
+    const admins = $('#adminsTableBody tr')
+    var value = $('#filter').val().toLowerCase();
+    users.filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+    admins.filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+}

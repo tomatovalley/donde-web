@@ -61,8 +61,8 @@
     document.getElementById('addImageBtn').onclick = function(){
         $('#formImage').modal('show')
     }
-
     document.getElementById('inputFile').onchange = function(){
+        document.getElementById('imgName').style.color = 'black';
         let file = document.getElementById('inputFile').files[0];
         let reader = new FileReader();
         let imgElem = document.getElementById('imgFile')
@@ -93,7 +93,7 @@
             for (let x = 0; x < cards.length; x++) {
                 checks[x].parentElement.style.display = 'inline-block'
                 position[x].style.display = 'none'
-                if(buttons[x].id != 'selectMultiBtn'){
+                if(typeof buttons[x] !== 'undefined' && buttons[x].id != 'selectMultiBtn'){
                     buttons[x].classList.add('disabled')
                 }
             }
@@ -236,14 +236,21 @@
      */
     function addImage(){    
         let valueInput = document.getElementById('valueInput')
+        hasError = false
         if(valueInput.value < 0 || valueInput.value == ""){
             valueInput.parentElement.classList.add("error")
-            return false
+            hasError = true
         }
         if(document.getElementById('tags').childElementCount == 0){
             document.getElementById('tags').parentElement.classList.add('error')
-            return false
+            hasError = true
         }
+        if(document.getElementById('inputFile').value == ""){
+            document.getElementById('imgName').style.color = '#9f3a38';   
+            hasError = true
+        }
+        if(hasError)
+            return
         document.getElementById('addImageBtnF').classList.add('loading','disabled')
         const tagsElements = document.getElementById('tags').getElementsByTagName('a')
         let respuestas = "" 
@@ -270,8 +277,7 @@
         http.onreadystatechange = function(){
             if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
                 response = JSON.parse(this.response)
-                if(response.success){
-                    $('#formImage').modal('hide')  
+                if(response.success){ 
                     document.getElementById('success-title').innerHTML = "Imagen agregada"
                     document.getElementById('modal-success-text').innerHTML = "La imagen se ha agregado correctamente."
                     $('#success-modal').modal('show')
@@ -318,20 +324,23 @@
         if(option != 1)
             cards.innerHTML = ""
         let card = ""
+        let answered = document.getElementById('filtro').value == 1? false : true
         data.forEach(function(image, index) {
-            let imagen = JSON.stringify(image).replace(/ /g, "♀");
-            if(typeof image.score !== undefined){
-                card += `<div class="ui card" onclick=clickImage('${image.URL}',${index},${imagen};>
-                            <div class="ui checkbox">
-                                <input class="check-input" id="checkId${index}" data-imageId="${image.id}" type="checkbox" />
-                            <label></label>
-                            </div>
-                            <div class="card-content">
-                                <div class="position">${index+1}</div>
-                                <div class="image"><img src='${image.URL}' onerror="this.src='/imgs/admin/no-image.png'"/></div>
-                                <div class="extra content"><i class="picture icon"></i>${typeof image.Value!=='undefined'?image.Value:'0'} ${image.Value == 1?' Punto':' Puntos'}</div>
-                            </div>
-                        </div>`
+            if(answered == image.Answered){
+                let imagen = JSON.stringify(image).replace(/ /g, "♀");
+                if(typeof image.score !== undefined){
+                    card += `<div class="ui card" onclick=clickImage('${image.URL}',${index},${imagen});>
+                                <div class="ui checkbox">
+                                    <input class="check-input" id="checkId${index}" data-imageId="${image.id}" type="checkbox" />
+                                <label></label>
+                                </div>
+                                <div class="card-content">
+                                    <div class="position">${index+1}</div>
+                                    <div class="image"><img src='${image.URL}' onerror="this.src='/imgs/admin/no-image.png'"/></div>
+                                    <div class="extra content"><i class="picture icon"></i>${typeof image.Value!=='undefined'?image.Value:'0'} ${image.Value == 1?' Punto':' Puntos'}</div>
+                                </div>
+                            </div>`
+                }
             }
         });
         cards.innerHTML = card;
@@ -428,7 +437,6 @@
                 if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
                     response = JSON.parse(this.response)
                     if(response.success){
-                        $('#delete-modal').modal('hide')  
                         document.getElementById('success-title').innerHTML = "Eliminación éxitosa"
                         document.getElementById('modal-success-text').innerHTML = "La ciudad se ha correctamente."
                         $('#success-modal').modal('show')
@@ -460,8 +468,7 @@
             http.onreadystatechange = function(){
                 if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
                     response = JSON.parse(this.response)
-                    if(response.success){
-                        $('#delete-modal').modal('hide')  
+                    if(response.success){ 
                         document.getElementById('success-title').innerHTML = "Eliminación éxitosa"
                         document.getElementById('modal-success-text').innerHTML = "Las imagenes se han eliminado correctamente."
                         $('#success-modal').modal('show')
