@@ -101,7 +101,7 @@ apiRoutes.get('/doLogout', function(req, res){
  * }
  */
 apiRoutes.get('/getUserData', function(req, res){
-    User.findById(req.body.id,{Password: 0}, function(err, userdata){
+    User.findById(req.query.id,{Password: 0}, function(err, userdata){
         if(err){
             res.json({success:false, msg: "No se pudo obtener los datos del usuario", err: err})
         }
@@ -120,8 +120,8 @@ apiRoutes.get('/getUserData', function(req, res){
  * }
  */
 apiRoutes.get('/getActiveImage', function(req, res){
-    const latitud = req.body.latitud
-    const longitud = req.body.longitud
+    const latitud = req.query.latitud
+    const longitud = req.query.longitud
     getAddress(latitud, longitud, function(response){
         if(response.success == false){
             return res.json(response)
@@ -154,10 +154,10 @@ apiRoutes.get('/getActiveImage', function(req, res){
             if(error)
                 return res.json({success:false, msg: "Algo ha sucedido en nuestro back.", err: error})
             else if(result.length > 0){
-                res.json(result)
+                res.json({sucess: true, tieneImagen: true, img: result})
             }
             else{
-                res.json({success:true, msg: "Esperando por imagen."})
+                res.json({sucess: true, tieneImagen: false, msg: "Aun no se ha subido una imagen."})
             }
         })
     })
@@ -196,8 +196,8 @@ function getAddress(latitud, longitud, callback){
  * }
  */
 apiRoutes.get('/checkAnswer', function(req, res){
-    let answer = req.body.answer.normalize('NFD').replace(/[\u0300-\u036f-,]/g, "")
-    const ciudad_id = req.body.ciudad_id
+    let answer = req.query.answer.normalize('NFD').replace(/[\u0300-\u036f-,]/g, "")
+    const ciudad_id = req.query.ciudad_id
 
     Images.aggregate([
         { 
@@ -228,7 +228,7 @@ apiRoutes.get('/checkAnswer', function(req, res){
                         if(correcto){
                             selextNextImage(function(resp){
                                 if(resp){
-                                    addScore(req.body.user_id, result[0].ImagesM1.Value, 1, function(success){
+                                    addScore(req.query.user_id, result[0].ImagesM1.Value, 1, function(success){
                                         if(success){
                                             res.json({success: true, isAnswerCorrect: true, msg: "Felicidades has contestado correctamente.", value: result[0].ImagesM1.Value})
                                         }
@@ -259,7 +259,7 @@ apiRoutes.get('/checkAnswer', function(req, res){
  * }
  */
 apiRoutes.get('/getImageGlobal', function(req, res){
-    User.findById(req.body._id,'M2Progress', function(err, result){
+    User.findById(req.query._id,'M2Progress', function(err, result){
         if(err){
             res.json({success: false, msg:"Algo ha sucedido."})
         }
@@ -307,17 +307,17 @@ apiRoutes.get('/getImageGlobal', function(req, res){
  * }
  */
 apiRoutes.get('/checkAnswerGlobal', function(req, res){
-    let respuesta = req.body.respuesta
-    if(req.body.user_id == undefined)
+    let respuesta = req.query.respuesta
+    if(req.query.user_id == undefined)
         return res.json({success:false, msg: "No se mandaron los datos necesarios."})
-    ImagesM2.findById(req.body._id, function(err, result){
+    ImagesM2.findById(req.query._id, function(err, result){
         if(err){
             console.log(err)
             res.json({success: false, msg:"Algo ha sucedido"})
         }
         else{
             if(result.Answers[0] == respuesta){
-                addScore(req.body.user_id, result.Value, 2, function(rs){
+                addScore(req.query.user_id, result.Value, 2, function(rs){
                     if(rs){
                         res.json({success:true, correcto: true, msg:"La respuesta es correcta.", puntos: result.Value})
                     }
