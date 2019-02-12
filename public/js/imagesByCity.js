@@ -410,6 +410,7 @@
             if(this.readyState == XMLHttpRequest.DONE && this.status == 200){
                 response = JSON.parse(this.response)
                 if(response.success){
+                    city.ImagesM1 = response.city
                     printImages(response.city, 1)
                 }
             }
