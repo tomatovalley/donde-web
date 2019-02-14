@@ -334,6 +334,31 @@ apiRoutes.get('/checkAnswerGlobal', function(req, res){
     })
 })
 
+apiRoutes.get('/getTops', function(req, res){
+    User.aggregate(
+        [ 
+          {'$addFields':
+            { 
+              'totalScore': {'$sum': '$Scores.score'}            
+            }
+          },
+          {
+            $sort: {'Score': -1}
+          },
+          {
+            $limit: 20
+          }
+        ], 
+        function(err, rs){
+          if(err){
+            res.json({success: true, msg: "Hubo un error al hacer la consulta"})
+          }
+          else{
+            res.json({success: true, usuarios: rs})
+          } 
+        }
+    )
+})
 /**
  * Hace un update de los scores del usuario
  * @param {Number} user_id Id del usuario al que se le hará el update

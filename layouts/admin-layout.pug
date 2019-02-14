@@ -7,49 +7,49 @@ html
         script(src="/js/jquery.min.js")
         script(src="/semantic/dist/semantic.min.js")
     body
-    .ui.top.attached.demo.menu.inverted 
-        a.item#sidebar-button
-            i.sidebar.icon
-            |     Menu
-        .div(style="text-align: right; width:100%; margin:2px;margin-right:10px")
-            img(src="/imgs/admin/dondeBlanco.png", alt="Logo de donde" height="40px;")
-            
-    .ui.bottom.attached.segment.pushable
-        .ui.inverted.labeled.icon.left.inline.vertical.sidebar.menu#sidebar
-            a.item(href="/home")
-                i.home.icon
-                |     Inicio
-            a.item(href="/users")
-                i.block.users.icon
-                |     Usuarios
-            a.item(href="/images")
-                i.smile.icon.camera.retro
-                |     Imagenes
-            a.item#logout
-                i.icon.logout
-                |     Salir
-        .pusher
-            .ui.basic.segment
-                h3.ui.header
-                    block content
-                p
-                p
-                p
-                p
-    
-    //Modal para cerrar sesión
-    .ui.tiny.modal#modal-logout
-        .header
-            | Cerrar sesión
-        .content
-            p   ¿Esta seguro que desea cerrar sesión?
-        .actions
-            .ui.labeled.icon.button.negative
-                i.cancel.icon
-                |   Cancelar
-            .ui.labeled.icon.button.positive(onclick="logout()")
-                i.check.icon
-                |   Confirmar
+        .ui.top.attached.demo.menu.inverted
+            a.item#sidebar-button
+                i.sidebar.icon
+                |     Menu
+            .div(style="text-align: right; width:100%; margin:2px;margin-right:10px")
+                img(src="/imgs/admin/dondeBlanco.png", alt="Logo de donde" height="40px;")
+                
+        .ui.bottom.attached.segment.pushable
+            .ui.inverted.labeled.icon.left.inline.vertical.sidebar.menu#sidebar
+                a.item(href="/home")
+                    i.home.icon
+                    |     Inicio
+                a.item(href="/users")
+                    i.block.users.icon
+                    |     Usuarios
+                a.item(href="/images")
+                    i.smile.icon.camera.retro
+                    |     Imagenes
+                a.item#logout
+                    i.icon.logout
+                    |     Salir
+            .pusher
+                .ui.basic.segment
+                    h3.ui.header
+                        block content
+                    p
+                    p
+                    p
+                    p
+        
+        //Modal para cerrar sesión
+        .ui.tiny.modal#modal-logout
+            .header
+                | Cerrar sesión
+            .content
+                p   ¿Esta seguro que desea cerrar sesión?
+            .actions
+                .ui.labeled.icon.button.negative
+                    i.cancel.icon
+                    |   Cancelar
+                .ui.labeled.icon.button.positive(onclick="logout()")
+                    i.check.icon
+                    |   Confirmar
     script.
         $('#sidebar')
             .sidebar({

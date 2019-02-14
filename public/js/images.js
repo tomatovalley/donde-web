@@ -272,9 +272,9 @@ function printCities(data){
                     <img src="${images.length > 0? images[0].URL: '/imgs/admin/no-image.png'}">
                 </div>
                 <div class="content">
-                    <a class="header">
+                    <div class="header">
                         ${element.City}
-                    </a>
+                    </div>
                     <div class="meta">
                         <span class="date">
                             ${element.State}, ${element.Country}
@@ -282,10 +282,8 @@ function printCities(data){
                     </div>
                 </div>
                 <div class="extra content">
-                    <a>
-                       <i class="picture icon"></i>
-                        ${images.length} ${images.length != 1? " Imágenes": " Imágen"}
-                    </a>
+                    <i class="picture icon"></i>
+                    ${images.length} ${images.length != 1? " Imágenes": " Imágen"}
                 </div>
             </a>
         </div>

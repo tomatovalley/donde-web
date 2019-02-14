@@ -41,16 +41,15 @@ block content
                     .image
                         img(src=city.toObject().ImagesM1.length > 0? city.toObject().ImagesM1[0].URL: '/imgs/admin/no-image.png')
                     .content
-                        a.header= city.toObject().City
+                        .header= city.toObject().City
                         .meta
                             span.date= city.toObject().State+', '+city.toObject().Country
                     .extra.content
-                        a
-                            i.picture.icon
-                            if city.toObject().ImagesM1.length != 1
-                                = city.toObject().ImagesM1.length+" Imágenes"
-                            else 
-                                = city.toObject().ImagesM1.length+" Imágen"
+                        i.picture.icon
+                        if city.toObject().ImagesM1.length != 1
+                            = city.toObject().ImagesM1.length+" Imágenes"
+                        else 
+                            = city.toObject().ImagesM1.length+" Imágen"
 
     //Loader
     .ui.text.loader#cargando Cargando...
