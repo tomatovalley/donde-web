@@ -47,7 +47,7 @@ usersRoutes.get('/', function(req, res) {
       let users = []
       rs.forEach(user => {
         
-        if(user.UserType == 1 || user.UserType == 2){
+        if(user.UserType == 2){
           admins.push(user);
         }
         else{
@@ -80,7 +80,7 @@ usersRoutes.get('/usersData', function(req, res){
       let users = []
       rs.forEach(user => {
         
-        if(user.UserType == 1 || user.UserType == 2){
+        if(user.UserType == 2){
           admins.push(user);
         }
         else{
