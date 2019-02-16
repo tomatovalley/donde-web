@@ -317,12 +317,19 @@ apiRoutes.get('/checkAnswerGlobal', function(req, res){
         }
         else{
             if(result.Answers[0] == respuesta){
-                addScore(req.query.user_id, result.Value, 2, function(rs){
-                    if(rs){
-                        res.json({success:true, correcto: true, msg:"La respuesta es correcta.", puntos: result.Value})
+                User.update({_id: req.query.user_id}, {$set: {M2Progress: req.query._id}}, function(error, resultado){
+                    if(error){
+                        res.json({success:false, msg:"Algo ha sucedido.", puntos: 0})
                     }
                     else{
-                        res.json({success:true, correcto: true, msg:"La respuesta es correcta.", puntos: result.Value})
+                        addScore(req.query.user_id, result.Value, 2, function(rs){
+                            if(rs){
+                                res.json({success:true, correcto: true, msg:"La respuesta es correcta.", puntos: result.Value})
+                            }
+                            else{
+                                res.json({success:true, correcto: true, msg:"La respuesta es correcta.", puntos: result.Value})
+                            }
+                        })
                     }
                 })
             }

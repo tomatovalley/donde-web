@@ -19,6 +19,7 @@ module.exports = mongoose.model('usuarios', new Schema({
       mode: {type: Number},
       date: {type: Date}  
   },
+  M2Progress: {type: String, default: ""},
   JoinedAT: {type: Date, default: Date.now},
   Status: {type: Boolean, default: true}
 }))

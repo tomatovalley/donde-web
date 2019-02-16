@@ -324,7 +324,7 @@ function printImagesM2(data){
         element = JSON.parse(element.replace(/♀/g, " "))
         let selectMultiBtn = document.getElementById('selectMultiBtn')
         if(!selectMultiBtn.classList.contains('selected')){
-            document.getElementById('detail-name').innerHTML = "ID: "+element.id
+            document.getElementById('detail-name').innerHTML = "ID: "+element._id
             document.getElementById('detail-points').innerHTML = "Puntaje: "+element.Value
             let respuestas = "";
             (element.Answers).forEach(function(element){
