@@ -341,7 +341,12 @@ apiRoutes.get('/checkAnswerGlobal', function(req, res){
     })
 })
 
+/**
+ * Ahora recibe el id del usuario para retornar su valor
+ * _id: Id del usuario
+ */
 apiRoutes.get('/getTops', function(req, res){
+    //Obtiene todos los mejores 10 usuarios
     User.aggregate(
         [ 
           {'$addFields':
@@ -350,20 +355,61 @@ apiRoutes.get('/getTops', function(req, res){
             }
           },
           {
-            $sort: {'Score': -1}
+            '$project': {"Name": 1, "User": 1, "Email": 1, "Scores": 1, "totalScore":1}
           },
           {
-            $limit: 20
+            $sort: {'totalScore': -1}
+          },
+          {
+            $limit: 10
           }
         ], 
         function(err, rs){
-          if(err){
-            res.json({success: true, msg: "Hubo un error al hacer la consulta"})
-          }
-          else{
-            res.json({success: true, usuarios: rs})
-          } 
-        }
+            if(err){
+                res.json({success: false, msg: "Hubo un error al hacer la consulta"})
+            }
+            else{
+                //Obtiene los datos del usuario actual, junto con su score
+                User.aggregate(
+                    [ 
+                      {'$addFields':
+                        { 
+                          'totalScore': {'$sum': '$Scores.score'}            
+                        }
+                      },
+                      {
+                        '$project': {"Name": 1, "User": 1, "Email": 1, "Scores": 1, "totalScore":1}
+                      },
+                      {
+                        '$match': {_id: ObjectID(req.query._id)}
+                      }
+                    ], function(error, usuario){
+                        //Se obtiene la posición del usuario en base a su score
+                        User.aggregate(
+                            [ 
+                              {'$addFields':
+                                { 
+                                  'totalScore': {'$sum': '$Scores.score'}            
+                                }
+                              },
+                              {
+                                '$match': {'totalScore': { '$gt': usuario[0].totalScore}}
+                              },
+                              {
+                                  '$count':'position'
+                              }
+                            ], function(er, user_pos){
+                                if(er){
+                                    res.json({success: false, msg: "Hubo un error al hacer la consulta"})
+                                }
+                                else{
+                                    usuario[0].position = Number(user_pos[0].position)+1
+                                    res.json({success: true, usuarios: rs, current_user: usuario[0]})
+                                }
+                            })
+                    })
+            }
+        } 
     )
 })
 /**
