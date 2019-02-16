@@ -403,7 +403,10 @@ apiRoutes.get('/getTops', function(req, res){
                                     res.json({success: false, msg: "Hubo un error al hacer la consulta"})
                                 }
                                 else{
-                                    usuario[0].position = Number(user_pos[0].position)+1
+                                    if(user_pos.length > 0)
+                                        usuario[0].position = Number(user_pos[0].position)+1
+                                    else
+                                        usuario[0].position = 1
                                     res.json({success: true, usuarios: rs, current_user: usuario[0]})
                                 }
                             })
